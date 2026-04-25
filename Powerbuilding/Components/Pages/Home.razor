@@ -1,0 +1,88 @@
+﻿@page "/"
+@using Domain.Entities
+@using Powerbuilding.Services
+@inject WorkoutClientService WorkoutService
+
+<PageTitle>Powerbuilding</PageTitle>
+
+<!-- TABS -->
+<div class="tabs-container">
+    <button class="tab @(activeTab == "training" ? "active" : "")"
+            @onclick='() => activeTab = "training"'>
+        🏋️ Training
+    </button>
+    <button class="tab @(activeTab == "nutrition" ? "active" : "")"
+            @onclick='() => activeTab = "nutrition"'>
+        🍽️ Nutrition
+    </button>
+    <button class="tab @(activeTab == "supplements" ? "active" : "")"
+            @onclick='() => activeTab = "supplements"'>
+        💊 Supplements
+    </button>
+    <button class="tab @(activeTab == "weekplan" ? "active" : "")"
+            @onclick='() => activeTab = "weekplan"'>
+        📅 Week Plan
+    </button>
+</div>
+
+<!-- CONTENT -->
+<div class="tab-content">
+
+    @if (activeTab == "training")
+    {
+        <h3>🏋️ Workout Days</h3>
+
+        @if (days == null)
+        {
+            <p>Loading...</p>
+        }
+        else if (!days.Any())
+        {
+            <p>No days found</p>
+        }
+        else
+        {
+            @foreach (var day in days)
+            {
+                <div class="day-card">
+                    <h4>Day @day.DayNumber — @day.DayName</h4>
+                    <p>@day.Focus</p>
+                    @if (day.IsRestDay)
+                    {
+                        <span class="badge-rest">Rest Day</span>
+                    }
+                    else
+                    {
+                        <span class="badge-active">@day.exercises.Count Exercises</span>
+                    }
+                </div>
+            }
+        }
+    }
+
+    @if (activeTab == "nutrition")
+    {
+        <h3>🍽️ Nutrition — Coming Soon</h3>
+    }
+
+    @if (activeTab == "supplements")
+    {
+        <h3>💊 Supplements — Coming Soon</h3>
+    }
+
+    @if (activeTab == "weekplan")
+    {
+        <h3>📅 Week Plan — Coming Soon</h3>
+    }
+
+</div>
+
+@code {
+    private string activeTab = "training";
+    private List<WorkoutDay>? days;
+
+    protected override async Task OnInitializedAsync()
+    {
+        days = await WorkoutService.GetAllDaysAsync();
+    }
+}

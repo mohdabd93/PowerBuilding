@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "EKRJOVb9eEM=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Mo\\source\\repos\\PowerbuildingApp\\Powerbuilding\\Powerbuilding.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Mo\\.nuget\\packages\\system.net.http.json\\8.0.0\\system.net.http.json.8.0.0.nupkg.sha512",
+    "C:\\Users\\Mo\\.nuget\\packages\\system.text.encodings.web\\8.0.0\\system.text.encodings.web.8.0.0.nupkg.sha512",
+    "C:\\Users\\Mo\\.nuget\\packages\\system.text.json\\8.0.0\\system.text.json.8.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
