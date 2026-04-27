@@ -1,88 +1,235 @@
 ﻿@page "/"
-@using Domain.Entities
-@using Powerbuilding.Services
+@rendermode InteractiveServer
+
 @inject WorkoutClientService WorkoutService
+@inject MealClientService MealService
+@inject SupplementClientService SupplementService
 
 <PageTitle>Powerbuilding</PageTitle>
 
-<!-- TABS -->
-<div class="tabs-container">
-    <button class="tab @(activeTab == "training" ? "active" : "")"
-            @onclick='() => activeTab = "training"'>
-        🏋️ Training
-    </button>
-    <button class="tab @(activeTab == "nutrition" ? "active" : "")"
-            @onclick='() => activeTab = "nutrition"'>
-        🍽️ Nutrition
-    </button>
-    <button class="tab @(activeTab == "supplements" ? "active" : "")"
-            @onclick='() => activeTab = "supplements"'>
-        💊 Supplements
-    </button>
-    <button class="tab @(activeTab == "weekplan" ? "active" : "")"
-            @onclick='() => activeTab = "weekplan"'>
-        📅 Week Plan
-    </button>
-</div>
+<div class="wrap">
 
-<!-- CONTENT -->
-<div class="tab-content">
+    <!-- HERO -->
+    <div class="hero">
+        <div class="hero-badge">⚡ Powerbuilding Protocol</div>
+        <h1>Strength. <em>Hypertrophy.</em> Definition.</h1>
+        <p class="hero-sub">Discipline builds what motivation can't.</p>
+    </div>
 
-    @if (activeTab == "training")
-    {
-        <h3>🏋️ Workout Days</h3>
+    <!-- PHILOSOPHY -->
+    <div class="philo">
+        <div class="philo-item">
+            <div class="philo-icon">🔴</div>
+            <div class="philo-name">Strength</div>
+            <div class="philo-desc">3–5 reps heavy loads</div>
+        </div>
+        <div class="philo-item">
+            <div class="philo-icon">🟡</div>
+            <div class="philo-name">Size</div>
+            <div class="philo-desc">8–12 reps hypertrophy</div>
+        </div>
+        <div class="philo-item">
+            <div class="philo-icon">🔵</div>
+            <div class="philo-name">Definition</div>
+            <div class="philo-desc">15–20 reps + cardio</div>
+        </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+        <button class="@GetTabClass("training")" @onclick='() => activeTab = "training"'>🏋️ Training</button>
+        <button class="@GetTabClass("nutrition")" @onclick='() => activeTab = "nutrition"'>🍽️ Nutrition</button>
+        <button class="@GetTabClass("supplements")" @onclick='() => activeTab = "supplements"'>💊 Supplements</button>
+        <button class="@GetTabClass("progress")" @onclick='() => activeTab = "progress"'>📈 Progress</button>
+    </div>
+
+    <!-- TRAINING -->
+    <div class="@GetPaneClass("training")">
+
+        <div class="sec-head">
+            <div class="sec-icon si-strength">🏋️</div>
+            <div>
+                <h2>Powerbuilding Program</h2>
+                <p>Strength → Hypertrophy → Definition</p>
+            </div>
+        </div>
 
         @if (days == null)
         {
-            <p>Loading...</p>
-        }
-        else if (!days.Any())
-        {
-            <p>No days found</p>
+            <div class="loading"><div class="spinner"></div>Loading...</div>
         }
         else
         {
-            @foreach (var day in days)
+            @foreach (var day in days.OrderBy(d => d.DayNumber))
             {
-                <div class="day-card">
-                    <h4>Day @day.DayNumber — @day.DayName</h4>
-                    <p>@day.Focus</p>
-                    @if (day.IsRestDay)
-                    {
-                        <span class="badge-rest">Rest Day</span>
-                    }
-                    else
-                    {
-                        <span class="badge-active">@day.exercises.Count Exercises</span>
-                    }
+                <div class="day">
+                    <div class="day-hd" @onclick="() => ToggleDay(day.Id)">
+
+                        <div class="day-left">
+                            <div class="dnum @(day.IsRestDay ? "d-rest" : "d-active")">
+                                @day.DayNumber
+                            </div>
+                            <div>
+                                <div class="dname">@day.DayName</div>
+                                <div class="dfocus">@day.Focus</div>
+                            </div>
+                        </div>
+
+                        <span class="dbadge">
+                            @(day.IsRestDay ? "Rest Day" : $"{day.exercises.Count} exercises")
+                        </span>
+                    </div>
+
+                    <div class="day-bd @(expandedDayId == day.Id ? "open" : "")">
+
+                        @if (day.IsRestDay)
+                        {
+                            <p class="rest-tip">Recovery day: walk, stretch, hydrate, sleep.</p>
+                        }
+                        else
+                        {
+                            @foreach (var group in day.exercises.GroupBy(e => e.Type))
+                            {
+                                <div class="phase-label">@group.Key</div>
+
+                                <table class="ex-table">
+                                    <tr>
+                                        <th>Exercise</th>
+                                        <th>Sets × Reps</th>
+                                        <th>Rest</th>
+                                    </tr>
+
+                                    @foreach (var ex in group)
+                                    {
+                                        <tr>
+                                            <td>@ex.Name</td>
+                                            <td>@ex.Sets × @ex.Reps</td>
+                                            <td>@ex.Rest</td>
+                                        </tr>
+                                    }
+                                </table>
+                            }
+                        }
+
+                    </div>
                 </div>
             }
         }
-    }
+    </div>
 
-    @if (activeTab == "nutrition")
-    {
-        <h3>🍽️ Nutrition — Coming Soon</h3>
-    }
+    <!-- NUTRITION -->
+    <div class="@GetPaneClass("nutrition")">
 
-    @if (activeTab == "supplements")
-    {
-        <h3>💊 Supplements — Coming Soon</h3>
-    }
+        <div class="sec-head">
+            <div class="sec-icon si-food">🍽️</div>
+            <div>
+                <h2>Nutrition</h2>
+                <p>High protein structured meals</p>
+            </div>
+        </div>
 
-    @if (activeTab == "weekplan")
-    {
-        <h3>📅 Week Plan — Coming Soon</h3>
-    }
+        @if (meals == null)
+        {
+            <div class="loading"><div class="spinner"></div>Loading...</div>
+        }
+        else
+        {
+            @foreach (var meal in meals)
+            {
+                <div class="meal">
+                    <div class="meal-hd">
+                        <div>
+                            <div class="meal-name">@meal.Name</div>
+                            <div class="meal-kcal">@meal.Calories kcal | @meal.Protein g</div>
+                        </div>
+                        <span class="meal-time">@meal.Time</span>
+                    </div>
+                </div>
+            }
+        }
+
+    </div>
+
+    <!-- SUPPLEMENTS -->
+    <div class="@GetPaneClass("supplements")">
+
+        <div class="sec-head">
+            <div class="sec-icon si-supp">💊</div>
+            <div>
+                <h2>Supplements</h2>
+                <p>Only essentials</p>
+            </div>
+        </div>
+
+        @if (supplements != null)
+        {
+            @foreach (var s in supplements)
+            {
+                <div class="supp-card">
+                    <div class="supp-ico">💊</div>
+                    <div>
+                        <div class="supp-name">@s.Name</div>
+                        <div class="supp-dose">@s.Dose</div>
+                        <div class="supp-desc">@s.Description</div>
+                    </div>
+                </div>
+            }
+        }
+
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="@GetPaneClass("progress")">
+
+        <div class="sec-head">
+            <div class="sec-icon si-prog">📈</div>
+            <div>
+                <h2>Progress</h2>
+                <p>Track everything</p>
+            </div>
+        </div>
+
+        <div class="prog-card">
+            <div class="prog-title">Progress Rules</div>
+            <div class="prog-sub">
+                Increase weight or reps weekly. Consistency > perfection.
+            </div>
+        </div>
+
+    </div>
 
 </div>
+
+<!-- NAV -->
+<nav class="bottom-nav">
+    <button class="nav-btn @(activeTab == "training" ? "active" : "")" @onclick='() => activeTab = "training"'>🏋️</button>
+    <button class="nav-btn @(activeTab == "nutrition" ? "active" : "")" @onclick='() => activeTab = "nutrition"'>🍽️</button>
+    <button class="nav-btn @(activeTab == "supplements" ? "active" : "")" @onclick='() => activeTab = "supplements"'>💊</button>
+    <button class="nav-btn @(activeTab == "progress" ? "active" : "")" @onclick='() => activeTab = "progress"'>📈</button>
+</nav>
 
 @code {
     private string activeTab = "training";
     private List<WorkoutDay>? days;
+    private List<Meal>? meals;
+    private List<Supplement>? supplements;
+    private int? expandedDayId;
 
     protected override async Task OnInitializedAsync()
     {
         days = await WorkoutService.GetAllDaysAsync();
+        meals = await MealService.GetAllMealsAsync();
+        supplements = await SupplementService.GetAllSupplementsAsync();
     }
+
+    private void ToggleDay(int id)
+    {
+        expandedDayId = expandedDayId == id ? null : id;
+    }
+
+    private string GetTabClass(string tab)
+        => tab == activeTab ? "tab on" : "tab";
+
+    private string GetPaneClass(string tab)
+        => tab == activeTab ? "pane on" : "pane";
 }

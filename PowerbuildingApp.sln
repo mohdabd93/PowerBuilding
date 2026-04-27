@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{C26F7062-7F1C-423A-825D-FF34F9A0829C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Powerbuilding", "Powerbuilding\Powerbuilding.csproj", "{1112B456-48F4-4952-B36A-D138E1AF4045}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Powerbuilding", "Powerbuilding\Powerbuilding.csproj", "{8DED75D4-398B-4861-9F42-FE751BF86F6E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{C26F7062-7F1C-423A-825D-FF34F9A0829C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C26F7062-7F1C-423A-825D-FF34F9A0829C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C26F7062-7F1C-423A-825D-FF34F9A0829C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1112B456-48F4-4952-B36A-D138E1AF4045}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1112B456-48F4-4952-B36A-D138E1AF4045}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1112B456-48F4-4952-B36A-D138E1AF4045}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1112B456-48F4-4952-B36A-D138E1AF4045}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DED75D4-398B-4861-9F42-FE751BF86F6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DED75D4-398B-4861-9F42-FE751BF86F6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DED75D4-398B-4861-9F42-FE751BF86F6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DED75D4-398B-4861-9F42-FE751BF86F6E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
