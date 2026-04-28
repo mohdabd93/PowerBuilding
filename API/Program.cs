@@ -18,6 +18,7 @@ builder.Services.AddScoped<WorkoutService>();
 builder.Services.AddScoped<WeekPlanService>();
 builder.Services.AddScoped<SupplementService>();
 builder.Services.AddScoped<MealService>();
+builder.Services.AddScoped<ExerciseLogService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

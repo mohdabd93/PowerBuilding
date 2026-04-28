@@ -1,5 +1,95 @@
 [
   {
+    "ContainingType": "API.Controllers.ExerciseLogController",
+    "Method": "GetAll",
+    "RelativePath": "api/ExerciseLog",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.ExerciseLogController",
+    "Method": "AddNewLog",
+    "RelativePath": "api/ExerciseLog",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "exerciseLog",
+        "Type": "Domain.Entities.ExerciseLog",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.ExerciseLogController",
+    "Method": "UpdateLog",
+    "RelativePath": "api/ExerciseLog",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "exerciseLog",
+        "Type": "Domain.Entities.ExerciseLog",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.ExerciseLogController",
+    "Method": "Delete",
+    "RelativePath": "api/ExerciseLog/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.ExerciseLogController",
+    "Method": "GetLogsByExercise",
+    "RelativePath": "api/ExerciseLog/exercise/{exerciseId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "exerciseId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.ExerciseLogController",
+    "Method": "GetLogById",
+    "RelativePath": "api/ExerciseLog/log/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "API.Controllers.MealController",
     "Method": "GetAllMeals",
     "RelativePath": "api/Meal",

@@ -407,10 +407,10 @@ body {
 }
 
     .ex-table th {
-        text-align: right;
+        text-align: left;
         color: var(--muted);
         font-weight: 700;
-        padding: 0.35rem 0.45rem;
+        padding: 0.5rem 0.45rem 0.2rem;
         border-bottom: 1px solid var(--border2);
         font-size: 0.7rem;
         text-transform: uppercase;
@@ -418,9 +418,9 @@ body {
     }
 
     .ex-table td {
-        padding: 0.5rem 0.45rem;
+        padding: 0.2rem 0.45rem 0.5rem;
         border-bottom: 1px solid #ffffff06;
-        vertical-align: middle;
+        vertical-align: top;
     }
 
     .ex-table tr:last-child td {
@@ -879,3 +879,71 @@ body {
         padding-bottom: 6rem;
     }
 }
+
+/*Progress*/
+/*
+.container {
+    max-width: 500px;
+    margin: auto;
+    padding: 20px;
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.card {
+    background: #1e1e2c;
+    padding: 20px;
+    border-radius: 12px;
+    color: white;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.label {
+    color: #aaa;
+}
+
+.value {
+    font-weight: bold;
+}
+
+.badge {
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.green {
+    background: #30e08a33;
+    color: #30e08a;
+}
+
+.red {
+    background: #ff404033;
+    color: #ff4040;
+}
+
+.gold {
+    background: #f0c04033;
+    color: #f0c040;
+}
+
+.blue {
+    background: #4090ff33;
+    color: #4090ff;
+}
+
+.recommendation {
+    margin-top: 15px;
+    padding: 10px;
+    background: #ffffff10;
+    border-radius: 8px;
+}
+    */

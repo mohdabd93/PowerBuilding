@@ -1,6 +1,6 @@
 ﻿@page "/"
 @rendermode InteractiveServer
-
+@inject NavigationManager Navigation
 @inject WorkoutClientService WorkoutService
 @inject MealClientService MealService
 @inject SupplementClientService SupplementService
@@ -95,15 +95,17 @@
                                 <table class="ex-table">
                                     <tr>
                                         <th>Exercise</th>
-                                        <th>Sets × Reps</th>
+                                        <th>Sets</th>
+                                        <th>Reps</th>
                                         <th>Rest</th>
                                     </tr>
 
                                     @foreach (var ex in group)
                                     {
                                         <tr>
-                                            <td>@ex.Name</td>
-                                            <td>@ex.Sets × @ex.Reps</td>
+                                            <td><a href="/progress/@ex.Id">@ex.Name</a></td> 
+                                            <td>@ex.Sets</td>
+                                            <td>@ex.Reps</td>
                                             <td>@ex.Rest</td>
                                         </tr>
                                     }

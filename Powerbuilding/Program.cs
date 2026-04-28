@@ -10,6 +10,7 @@ builder.Services.AddRazorComponents()
 builder.Services.AddScoped<WorkoutClientService>();
 builder.Services.AddScoped<MealClientService>();
 builder.Services.AddScoped<SupplementClientService>();
+builder.Services.AddScoped<ExerciseClientService>();
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 builder.Services.AddHttpClient("API", client => client.BaseAddress = new Uri("https://localhost:7151/"));
 var app = builder.Build();

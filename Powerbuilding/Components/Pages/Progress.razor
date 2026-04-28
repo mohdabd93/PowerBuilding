@@ -1,0 +1,222 @@
+﻿@page "/progress/{exerciseId:int}"
+@rendermode InteractiveServer
+@inject ExerciseClientService ExerciseService
+@inject NavigationManager Navigation
+
+<PageTitle>Exercise Progress</PageTitle>
+
+<div class="wrap">
+
+    <!-- BACK -->
+    <div style="margin: 1.5rem 0 1rem;">
+        <button class="wtab" @onclick='() => Navigation.NavigateTo("/")'>
+            ← Back
+        </button>
+    </div>
+
+    @if (isLoading)
+    {
+        <div class="loading">
+            <div class="spinner"></div>
+            Loading...
+        </div>
+    }
+    else
+    {
+        @if (log == null)
+        {
+            <!-- EMPTY -->
+            <div class="sec-head">
+                <div class="sec-icon si-strength">🏋️</div>
+                <div>
+                    <h2>Exercise Log</h2>
+                    <p>No sessions logged yet</p>
+                </div>
+            </div>
+
+            <div class="callout c-gold">
+                💡 No logs found — add your first session below!
+            </div>
+        }
+        else
+        {
+            <!-- HEADER -->
+            <div class="sec-head">
+                <div class="sec-icon si-strength">🏋️</div>
+                <div>
+                    <h2>@log.Exercise?.Name</h2>
+                    <p>@log.Exercise?.Note</p>
+                </div>
+            </div>
+
+            <!-- CURRENT VS PREVIOUS -->
+            <div class="macro-row" style="grid-template-columns:repeat(2,1fr);">
+                <div class="mc kcal">
+                    <div class="mc-val">@log.Weight</div>
+                    <div class="mc-lbl">Current (kg)</div>
+                </div>
+                <div class="mc prot">
+                    <div class="mc-val">@(previousWeight == 0 ? "—" : previousWeight.ToString())</div>
+                    <div class="mc-lbl">Previous (kg)</div>
+                </div>
+            </div>
+
+            <!-- STATUS -->
+            <div class="prog-card">
+                <div class="prog-title">📊 Progress Status</div>
+                <div class="prog-sub" style="margin-top:0.5rem;">
+                    <span class="@GetBadgeClass()">@status</span>
+                    <br /><br />
+                    💡 @recommendation
+                </div>
+            </div>
+        }
+
+        <!-- ✅ FORM (دائماً يظهر) -->
+        <div class="prog-card">
+            <div class="prog-title">➕ Log New Session</div>
+
+            <div style="display:flex; flex-direction:column; gap:0.8rem; margin-top:0.8rem;">
+
+                <div style="display:flex; gap:0.6rem;">
+                    <div style="flex:1;">
+                        <div style="font-size:0.72rem; color:var(--muted2); margin-bottom:0.3rem;">Weight (kg)</div>
+                        <input type="number" step="0.5" @bind="newWeight"
+                               style="width:100%; background:var(--s3); border:1px solid var(--border2);
+                                   color:var(--text); border-radius:10px; padding:0.6rem;" />
+                    </div>
+
+                    <div style="flex:1;">
+                        <div style="font-size:0.72rem; color:var(--muted2); margin-bottom:0.3rem;">Reps</div>
+                        <input type="number" @bind="newReps"
+                               style="width:100%; background:var(--s3); border:1px solid var(--border2);
+                                   color:var(--text); border-radius:10px; padding:0.6rem;" />
+                    </div>
+                </div>
+
+                <input type="text" @bind="newNotes"
+                       placeholder="Notes..."
+                       style="background:var(--s3); border:1px solid var(--border2);
+                           color:var(--text); border-radius:10px; padding:0.6rem;" />
+
+                @if (!string.IsNullOrEmpty(saveMessage))
+                {
+                    <div class="callout c-green">✅ @saveMessage</div>
+                }
+
+                <button class="tab on" @onclick="SaveLog">
+                    💾 Save Session
+                </button>
+
+            </div>
+        </div>
+    }
+
+</div>
+
+@code {
+    [Parameter] public int exerciseId { get; set; }
+
+    private bool isLoading = true;
+
+    private ExerciseLog? log;
+    private decimal previousWeight;
+
+    private string status = "";
+    private string recommendation = "";
+    private string saveMessage = "";
+
+    private decimal newWeight;
+    private int newReps;
+    private string newNotes = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadLogs();
+    }
+
+    private async Task LoadLogs()
+    {
+        try
+        {
+            isLoading = true;
+
+            var logs = await ExerciseService.GetLastLogsByExerciseAsync(exerciseId);
+
+            if (logs == null || logs.Count == 0)
+            {
+                log = null;
+                return;
+            }
+
+            log = logs[0];
+            var previous = logs.ElementAtOrDefault(1);
+
+            previousWeight = previous?.Weight ?? 0;
+
+            if (previous != null)
+            {
+                if (log.Weight > previous.Weight)
+                {
+                    status = "▲ Progress";
+                    recommendation = $"Try {log.Weight + 2.5m} kg next session";
+                }
+                else if (log.Weight < previous.Weight)
+                {
+                    status = "▼ Drop";
+                    recommendation = "Reduce load or recover";
+                }
+                else
+                {
+                    status = "→ Stable";
+                    recommendation = "Add reps before weight";
+                }
+            }
+            else
+            {
+                status = "🆕 First Log";
+                recommendation = "Start building consistency";
+            }
+        }
+        catch
+        {
+            log = null;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task SaveLog()
+    {
+        var newLog = new ExerciseLog
+        {
+            ExerciseId = exerciseId,
+            Weight = newWeight,
+            Reps = newReps,
+            Notes = newNotes,
+            Date = DateTime.UtcNow
+        };
+
+        await ExerciseService.AddExerciseLogAsync(newLog);
+
+        saveMessage = "Saved ✔";
+
+        newWeight = 0;
+        newReps = 0;
+        newNotes = "";
+
+        await LoadLogs();
+
+        await Task.Delay(2000);
+        saveMessage = "";
+    }
+
+    private string GetBadgeClass()
+    {
+        return status.Contains("Progress") ? "dbadge"
+             : status.Contains("Drop") ? "dbadge rest"
+             : "dbadge";
+    }
+}
