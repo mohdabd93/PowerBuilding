@@ -1,67 +1,56 @@
 ﻿using API.Services;
 using Domain.Entities;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class MealController : ControllerBase
     {
-        private readonly MealService m_mealService;
+        private readonly MealService m_service;
 
-        public MealController(MealService mealService)
+        public MealController(MealService service)
         {
-            m_mealService = mealService;
+            m_service = service;
         }
 
         //--------------------------------------------------
-        // GET api/meal
+        // GET all meals by WeekPlan
         //--------------------------------------------------
-        [HttpGet]
-        public async Task<IActionResult> GetAllMeals()
+        [HttpGet("{weekPlanId}")]
+        public async Task<IActionResult> GetAll(int weekPlanId)
         {
-            var meals = await m_mealService.GetAllMealsAsync();
-            if (meals != null)
-                return Ok(meals);
-            return NoContent();
+            var result = await m_service.GetAllByWeekPlanIdAsync(weekPlanId);
+            return Ok(result);
         }
 
         //--------------------------------------------------
-        // GET api/meal/5
+        // GET meal by id
         //--------------------------------------------------
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetMealById(int id)
+        [HttpGet("item/{id}")]
+        public async Task<IActionResult> GetById(int id)
         {
-            var meal = await m_mealService.GetMealByIdAsync(id);
-            if (meal != null)
-                return Ok(meal);
-            return NotFound($"Meal with Id [{id}] not found");
+            var result = await m_service.GetByIdAsync(id);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
         }
 
         //--------------------------------------------------
-        // GET api/meal/name/فطور
+        // POST (FIXED)
         //--------------------------------------------------
-        [HttpGet("name/{mealName}")]
-        public async Task<IActionResult> GetMealByName(string mealName)
-        {
-            var meal = await m_mealService.GetMealByNamAsync(mealName);
-            if (meal != null)
-                return Ok(meal);
-            return NotFound($"Meal [{mealName}] not found");
-        }
-
-        //--------------------------------------------------
-        // POST api/meal
-        //--------------------------------------------------
-        [HttpPost]
-        public async Task<IActionResult> AddNewMeal([FromBody] Meal meal)
+        [HttpPost("{weekPlanId}")]
+        public async Task<IActionResult> Create(int weekPlanId, [FromBody] Meal model)
         {
             try
             {
-                var newMeal = await m_mealService.AddMealAsync(meal);
-                return CreatedAtAction(nameof(GetMealById), new { id = newMeal.Id }, newMeal);
+                var result = await m_service.AddAsync(weekPlanId, model);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -70,15 +59,15 @@ namespace API.Controllers
         }
 
         //--------------------------------------------------
-        // PUT api/meal
+        // PUT
         //--------------------------------------------------
         [HttpPut]
-        public async Task<IActionResult> UpdateMeal([FromBody] Meal meal)
+        public async Task<IActionResult> Update([FromBody] Meal model)
         {
             try
             {
-                var updatedMeal = await m_mealService.UpdateMealAsync(meal);
-                return Ok(updatedMeal);
+                var result = await m_service.UpdateAsync(model);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -87,14 +76,16 @@ namespace API.Controllers
         }
 
         //--------------------------------------------------
-        // DELETE api/meal/5
+        // DELETE
         //--------------------------------------------------
         [HttpDelete("{id}")]
-        public async Task<IActionResult> RemoveMeal(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var result = await m_mealService.DeleteMealAsync(id);
+            var result = await m_service.DeleteAsync(id);
+
             if (!result)
-                return NotFound($"Meal with Id [{id}] not found");
+                return NotFound();
+
             return NoContent();
         }
     }

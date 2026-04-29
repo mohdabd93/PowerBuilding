@@ -1,0 +1,97 @@
+﻿@page "/login"
+@inject AuthClientService AuthService
+@inject NavigationManager Nav
+@inject UserSessionService UserSessionService
+@rendermode InteractiveServer
+
+<div class="auth-bg">
+
+    <div class="auth-card">
+
+        <div class="auth-header">
+            <div class="logo">⚡ Powerbuilding</div>
+            <h1>Welcome Back</h1>
+            <p>Enter your credentials to continue your journey</p>
+        </div>
+
+        <div class="auth-body">
+
+            <input class="auth-input" placeholder="Email" @bind="model.Email" />
+            <input class="auth-input" type="password" placeholder="Password" @bind="model.Password" />
+
+            @if (!string.IsNullOrEmpty(errorMsg))
+            {
+                <div class="auth-error">@errorMsg</div>
+            }
+
+            <button class="auth-btn" @onclick="SubmitLogin">
+                Sign In
+            </button>
+
+            <button class="auth-link" @onclick="GoForgot">
+                Forgot Password?
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+@code {
+    private LoginRequest model = new();
+    private string errorMsg = "";
+
+    private async Task SubmitLogin()
+    {
+        errorMsg = "";
+
+        var res = await AuthService.LoginAsync(model);
+
+        if (res == null)
+        {
+            errorMsg = "No response from server";
+            return;
+        }
+
+        if (!res.Success)
+        {
+            errorMsg = res.Error ?? "Login failed";
+            return;
+        }
+
+        if (res.Data is not System.Text.Json.JsonElement json)
+        {
+            errorMsg = "Invalid response format";
+            return;
+        }
+
+        try
+        {
+            var id = json.GetProperty("id").GetString();
+            var email = json.GetProperty("email").GetString();
+            var userName = json.GetProperty("userName").GetString();
+            var firstName = json.GetProperty("firstName").GetString();
+            var lastName = json.GetProperty("lastName").GetString();
+
+            if (string.IsNullOrEmpty(id))
+            {
+                errorMsg = "Invalid user id";
+                return;
+            }
+
+            await UserSessionService.SetUser(id, email, userName, firstName, lastName);
+
+            Nav.NavigateTo("/", forceLoad: true);
+        }
+        catch
+        {
+            errorMsg = "Failed to parse user data";
+        }
+    }
+
+    private void GoForgot()
+    {
+        Nav.NavigateTo("/forgot-password");
+    }
+}

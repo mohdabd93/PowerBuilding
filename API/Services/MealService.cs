@@ -1,93 +1,93 @@
 ﻿using API.Data;
 using Domain.Entities;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Services
 {
     public class MealService
     {
-        private readonly AppDbContext m_appDbContext;
+        private readonly AppDbContext m_context;
 
-        public MealService(AppDbContext appDbContext)
+        public MealService(AppDbContext context)
         {
-            m_appDbContext = appDbContext;
+            m_context = context;
+        }
+
+        public async Task<List<Meal>> GetAllByWeekPlanIdAsync(int weekPlanId)
+        {
+                 return await m_context.Meals
+                .Include(m => m.NutritionPlan)
+                .Where(m => m.NutritionPlan.WeekPlanId == weekPlanId)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+        //--------------------------------------------------
+        // Get Meals by WeekPlan
+        //--------------------------------------------------
+        public async Task<List<Meal>> GetByWeekPlanAsync(int weekPlanId)
+        {
+            return await m_context.Meals
+                .Where(x => x.NutritionPlan != null &&
+                            x.NutritionPlan.WeekPlanId == weekPlanId)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         //--------------------------------------------------
-        // Get All Meals
+        // Get by Id
         //--------------------------------------------------
-        public async Task<List<Meal>> GetAllMealsAsync()
+        public async Task<Meal?> GetByIdAsync(int id)
         {
-            return await m_appDbContext.Meals.ToListAsync();
+            return await m_context.Meals.FindAsync(id);
         }
 
-        //--------------------------------------------------
-        // Get Meal By Id
-        //--------------------------------------------------
-        public async Task<Meal?> GetMealByIdAsync(int id)
-        {
-            return await m_appDbContext.Meals
-                .FirstOrDefaultAsync(m => m.Id == id);
-        }
-
-        //--------------------------------------------------
-        // Get Meal By Name
-        //--------------------------------------------------
-        public async Task<Meal?> GetMealByNamAsync(string name)
-        {
-            return await m_appDbContext.Meals
-                .FirstOrDefaultAsync(m => m.Name == name);
-        }
         //--------------------------------------------------
         // Add Meal
         //--------------------------------------------------
-        public async Task<Meal> AddMealAsync(Meal newMeal)
+        public async Task<Meal> AddAsync(int weekPlanId, Meal meal)
         {
-            var existMeal = await m_appDbContext.Meals
-                .FirstOrDefaultAsync(m => m.Name == newMeal.Name);
+            var nutritionPlan = await m_context.NutritionPlans
+                .FirstOrDefaultAsync(n => n.WeekPlanId == weekPlanId);
 
-            if (existMeal != null)
-                throw new Exception($"Meal [{newMeal.Name}] already exists");
+            if (nutritionPlan == null)
+                throw new Exception("NutritionPlan not found for this WeekPlan");
 
-            await m_appDbContext.AddAsync(newMeal);
-            await m_appDbContext.SaveChangesAsync();
-            return newMeal;
+            meal.NutritionPlanId = nutritionPlan.Id;
+
+            await m_context.Meals.AddAsync(meal);
+            await m_context.SaveChangesAsync();
+
+            return meal;
+        }
+        //--------------------------------------------------
+        // Update
+        //--------------------------------------------------
+        public async Task<Meal> UpdateAsync(Meal meal)
+        {
+            var exist = await m_context.Meals.FindAsync(meal.Id);
+            if (exist == null) throw new Exception("Not found");
+
+            exist.Name = meal.Name;
+            exist.Time = meal.Time;
+            exist.Calories = meal.Calories;
+            exist.Protein = meal.Protein;
+            exist.Tip = meal.Tip;
+
+            await m_context.SaveChangesAsync();
+            return exist;
         }
 
         //--------------------------------------------------
-        // Update Meal
+        // Delete
         //--------------------------------------------------
-        public async Task<Meal> UpdateMealAsync(Meal updateMeal)
+        public async Task<bool> DeleteAsync(int id)
         {
-            var existMeal = await m_appDbContext.Meals
-                .FindAsync(updateMeal.Id);
+            var meal = await m_context.Meals.FindAsync(id);
+            if (meal == null) return false;
 
-            if (existMeal == null)
-                throw new Exception($"Meal with Id [{updateMeal.Id}] not found");
+            m_context.Remove(meal);
+            await m_context.SaveChangesAsync();
 
-            existMeal.Name = updateMeal.Name;
-            existMeal.Time = updateMeal.Time;
-            existMeal.Calories = updateMeal.Calories;
-            existMeal.Protein = updateMeal.Protein;
-            existMeal.Tip = updateMeal.Tip;
-
-            await m_appDbContext.SaveChangesAsync();
-            return existMeal;
-        }
-
-        //--------------------------------------------------
-        // Delete Meal
-        //--------------------------------------------------
-        public async Task<bool> DeleteMealAsync(int id)
-        {
-            var existMeal = await m_appDbContext.Meals.FindAsync(id);
-
-            if (existMeal == null)
-                return false;
-
-            m_appDbContext.Remove(existMeal);
-            await m_appDbContext.SaveChangesAsync();
             return true;
         }
     }

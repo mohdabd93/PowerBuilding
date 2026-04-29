@@ -1,5 +1,121 @@
 [
   {
+    "ContainingType": "API.Controllers.AuthController",
+    "Method": "ForgotPassword",
+    "RelativePath": "api/Auth/forgot-password",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.AuthController",
+    "Method": "CreateInvite",
+    "RelativePath": "api/Auth/invite",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.AuthController",
+    "Method": "Login",
+    "RelativePath": "api/Auth/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Microsoft.AspNetCore.Identity.Data.LoginRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.AuthController",
+    "Method": "Logout",
+    "RelativePath": "api/Auth/logout",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.AuthController",
+    "Method": "Register",
+    "RelativePath": "api/Auth/register",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Domain.Entities.RegisterRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.AuthController",
+    "Method": "ResetPassword",
+    "RelativePath": "api/Auth/reset-password",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Domain.Entities.ResetPasswordRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.AuthController",
+    "Method": "UserInfo",
+    "RelativePath": "api/Auth/userinfo",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.AuthController",
+    "Method": "ValidateInvite",
+    "RelativePath": "api/Auth/validate",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "token",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "API.Controllers.ExerciseLogController",
     "Method": "GetAll",
     "RelativePath": "api/ExerciseLog",
@@ -90,141 +206,94 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "API.Controllers.MealController",
-    "Method": "GetAllMeals",
-    "RelativePath": "api/Meal",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "API.Controllers.MealController",
-    "Method": "AddNewMeal",
-    "RelativePath": "api/Meal",
+    "ContainingType": "API.Controllers.InviteController",
+    "Method": "Create",
+    "RelativePath": "api/invite",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "meal",
-        "Type": "Domain.Entities.Meal",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "API.Controllers.MealController",
-    "Method": "UpdateMeal",
-    "RelativePath": "api/Meal",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "meal",
-        "Type": "Domain.Entities.Meal",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "API.Controllers.MealController",
-    "Method": "GetMealById",
-    "RelativePath": "api/Meal/{id}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "API.Controllers.MealController",
-    "Method": "RemoveMeal",
-    "RelativePath": "api/Meal/{id}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "API.Controllers.MealController",
-    "Method": "GetMealByName",
-    "RelativePath": "api/Meal/name/{mealName}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "mealName",
+        "Name": "email",
         "Type": "System.String",
-        "IsRequired": true
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
   },
   {
-    "ContainingType": "API.Controllers.SupplementController",
-    "Method": "GetAllSupplementsAsync",
-    "RelativePath": "api/Supplement",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "API.Controllers.SupplementController",
-    "Method": "AddNewSupplement",
-    "RelativePath": "api/Supplement",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "newSupplement",
-        "Type": "Domain.Entities.Supplement",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "API.Controllers.SupplementController",
-    "Method": "UpdateSupplement",
-    "RelativePath": "api/Supplement",
+    "ContainingType": "API.Controllers.MealController",
+    "Method": "Update",
+    "RelativePath": "api/Meal",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "updatedSupplement",
-        "Type": "Domain.Entities.Supplement",
+        "Name": "model",
+        "Type": "Domain.Entities.Meal",
         "IsRequired": true
       }
     ],
     "ReturnTypes": []
   },
   {
-    "ContainingType": "API.Controllers.SupplementController",
-    "Method": "GetSupplementByIdAsync",
-    "RelativePath": "api/Supplement/{id}",
+    "ContainingType": "API.Controllers.MealController",
+    "Method": "Delete",
+    "RelativePath": "api/Meal/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.MealController",
+    "Method": "GetAll",
+    "RelativePath": "api/Meal/{weekPlanId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "weekPlanId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.MealController",
+    "Method": "Create",
+    "RelativePath": "api/Meal/{weekPlanId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "weekPlanId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "model",
+        "Type": "Domain.Entities.Meal",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.MealController",
+    "Method": "GetById",
+    "RelativePath": "api/Meal/item/{id}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -239,7 +308,23 @@
   },
   {
     "ContainingType": "API.Controllers.SupplementController",
-    "Method": "DeleteSupplement",
+    "Method": "Update",
+    "RelativePath": "api/Supplement",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "Domain.Entities.Supplement",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.SupplementController",
+    "Method": "Delete",
     "RelativePath": "api/Supplement/{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
@@ -254,8 +339,61 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "API.Controllers.SupplementController",
+    "Method": "GetAll",
+    "RelativePath": "api/Supplement/{weekPlanId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "weekPlanId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.SupplementController",
+    "Method": "Create",
+    "RelativePath": "api/Supplement/{weekPlanId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "weekPlanId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "model",
+        "Type": "Domain.Entities.Supplement",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.SupplementController",
+    "Method": "GetById",
+    "RelativePath": "api/Supplement/item/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "API.Controllers.WeekPlanController",
-    "Method": "GetAllWeekPlans",
+    "Method": "GetAll",
     "RelativePath": "api/WeekPlan",
     "HttpMethod": "GET",
     "IsController": true,
@@ -265,14 +403,14 @@
   },
   {
     "ContainingType": "API.Controllers.WeekPlanController",
-    "Method": "AddWeekPlan",
+    "Method": "Create",
     "RelativePath": "api/WeekPlan",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "weekPlan",
+        "Name": "model",
         "Type": "Domain.Entities.WeekPlan",
         "IsRequired": true
       }
@@ -281,14 +419,14 @@
   },
   {
     "ContainingType": "API.Controllers.WeekPlanController",
-    "Method": "UpdateWeekPlan",
+    "Method": "Update",
     "RelativePath": "api/WeekPlan",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "weekPlan",
+        "Name": "model",
         "Type": "Domain.Entities.WeekPlan",
         "IsRequired": true
       }
@@ -297,7 +435,7 @@
   },
   {
     "ContainingType": "API.Controllers.WeekPlanController",
-    "Method": "GetWeekPlanById",
+    "Method": "GetById",
     "RelativePath": "api/WeekPlan/{id}",
     "HttpMethod": "GET",
     "IsController": true,
@@ -313,7 +451,7 @@
   },
   {
     "ContainingType": "API.Controllers.WeekPlanController",
-    "Method": "DeleteWeekPlan",
+    "Method": "Delete",
     "RelativePath": "api/WeekPlan/{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
@@ -328,9 +466,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "API.Controllers.WorkoutDayController",
-    "Method": "GetAllDays",
-    "RelativePath": "api/WorkoutDay",
+    "ContainingType": "API.Controllers.WeekPlanController",
+    "Method": "GetFullWeekPlan",
+    "RelativePath": "api/WeekPlan/full",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -339,30 +477,14 @@
   },
   {
     "ContainingType": "API.Controllers.WorkoutDayController",
-    "Method": "AddNewDay",
-    "RelativePath": "api/WorkoutDay",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "workoutDay",
-        "Type": "Domain.Entities.WorkoutDay",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "API.Controllers.WorkoutDayController",
-    "Method": "UpdateDay",
+    "Method": "Update",
     "RelativePath": "api/WorkoutDay",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "workoutDay",
+        "Name": "model",
         "Type": "Domain.Entities.WorkoutDay",
         "IsRequired": true
       }
@@ -371,9 +493,9 @@
   },
   {
     "ContainingType": "API.Controllers.WorkoutDayController",
-    "Method": "GetDayById",
+    "Method": "Delete",
     "RelativePath": "api/WorkoutDay/{id}",
-    "HttpMethod": "GET",
+    "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
     "Parameters": [
@@ -387,9 +509,46 @@
   },
   {
     "ContainingType": "API.Controllers.WorkoutDayController",
-    "Method": "RemoveDay",
-    "RelativePath": "api/WorkoutDay/{id}",
-    "HttpMethod": "DELETE",
+    "Method": "GetAll",
+    "RelativePath": "api/WorkoutDay/{weekPlanId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "weekPlanId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.WorkoutDayController",
+    "Method": "Create",
+    "RelativePath": "api/WorkoutDay/{weekPlanId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "weekPlanId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "model",
+        "Type": "Domain.Entities.WorkoutDay",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.WorkoutDayController",
+    "Method": "GetById",
+    "RelativePath": "api/WorkoutDay/day/{id}",
+    "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [

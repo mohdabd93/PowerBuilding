@@ -6,82 +6,85 @@ namespace API.Services
 {
     public class SupplementService
     {
-        private readonly AppDbContext m_appDbContext;
+        private readonly AppDbContext m_context;
 
-        public SupplementService(AppDbContext appDbContext)
+        public SupplementService(AppDbContext context)
         {
-            m_appDbContext = appDbContext;
-        }
-
-
-        //--------------------------------------------------
-        // Get All Supplements
-        //--------------------------------------------------
-        public async Task<IEnumerable<Supplement>> GetAllSupplementsAsync()
-        {
-            return await m_appDbContext.Supplements.ToListAsync();
+            m_context = context;
         }
 
         //--------------------------------------------------
-        // Get GetSupplement By Id  
+        // GetAllByWeekPlanIdAsync
         //--------------------------------------------------
-        public async Task<Supplement?> GetSupplementByIdAsync(int id)
+        public async Task<List<Supplement>> GetAllByWeekPlanIdAsync(int weekPlanId)
         {
-            return await m_appDbContext.Supplements
-        .FirstOrDefaultAsync(m => m.Id == id);
+            return await m_context.Supplements
+                .Where(m => m.WeekPlanId == weekPlanId)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         //--------------------------------------------------
-        // Add Supplement Async
+        // Get by WeekPlan
         //--------------------------------------------------
-        public async Task<Supplement> AddSupplementAsync(Supplement supplement)
+        public async Task<List<Supplement>> GetByWeekPlanAsync(int weekPlanId)
         {
-            var existSUpplement = await m_appDbContext.Supplements
-           .FirstOrDefaultAsync(m => m.Name == supplement.Name || m.Id == supplement.Id);
-
-            if (existSUpplement != null)
-                throw new Exception($"Supplement [{supplement.Name}] already exists");
-
-            await m_appDbContext.AddAsync(supplement);
-            await m_appDbContext.SaveChangesAsync();
-            return supplement;
+            return await m_context.Supplements
+                .Where(x => x.WeekPlanId == weekPlanId)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         //--------------------------------------------------
-        // Update Supplement Async
+        // Get by Id
         //--------------------------------------------------
-        public async Task<Supplement> UpdateSupplementAsync(Supplement supplement)
+        public async Task<Supplement?> GetByIdAsync(int id)
         {
-            var existSUpplement = await m_appDbContext.Supplements
-             .FirstOrDefaultAsync(m => m.Id == supplement.Id);
-            if(existSUpplement == null)
-                throw new Exception($"Supplement [{supplement.Name}] does not exist");
-
-            existSUpplement.Name = supplement.Name;
-            existSUpplement.Dose = supplement.Dose;
-            existSUpplement.Description = supplement.Description;
-            existSUpplement.IsEssential = supplement.IsEssential;
-            await m_appDbContext.SaveChangesAsync();
-
-            return existSUpplement;
+            return await m_context.Supplements.FindAsync(id);
         }
 
         //--------------------------------------------------
-        // Get Delete Supplemet
+        // Add
         //--------------------------------------------------
-        public async Task<bool> DeleteSupplemet(int id)
+        public async Task<Supplement> AddAsync(int weekPlanId, Supplement model)
         {
-            var existSUpplement = await m_appDbContext.Supplements
-          .FirstOrDefaultAsync(m => m.Id == id);
+            model.WeekPlanId = weekPlanId;
 
-            if (existSUpplement == null)
-                return false;
+            m_context.Supplements.Add(model);
+            await m_context.SaveChangesAsync();
 
-            m_appDbContext.Remove(existSUpplement);
-            await m_appDbContext.SaveChangesAsync();
+            return model;
+        }
+
+        //--------------------------------------------------
+        // Update
+        //--------------------------------------------------
+        public async Task<Supplement> UpdateAsync(Supplement s)
+        {
+            var exist = await m_context.Supplements.FindAsync(s.Id);
+            if (exist == null) throw new Exception("Not found");
+
+            exist.Name = s.Name;
+            exist.Dose = s.Dose;
+            exist.Description = s.Description;
+            exist.IsEssential = s.IsEssential;
+
+            await m_context.SaveChangesAsync();
+            return exist;
+        }
+
+        //--------------------------------------------------
+        // Delete
+        //--------------------------------------------------
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var s = await m_context.Supplements.FindAsync(id);
+            if (s == null) return false;
+
+            m_context.Remove(s);
+            await m_context.SaveChangesAsync();
+
             return true;
-
         }
-
     }
 }

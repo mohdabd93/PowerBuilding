@@ -5,6 +5,206 @@
     "version": "1.0"
   },
   "paths": {
+    "/api/Auth/invite": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "string"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Auth/validate": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Auth/register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Auth/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Auth/userinfo": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Auth/forgot-password": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "string"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Auth/reset-password": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/ExerciseLog": {
       "get": {
         "tags": [
@@ -144,10 +344,42 @@
         }
       }
     },
-    "/api/Meal": {
+    "/api/invite": {
+      "post": {
+        "tags": [
+          "Invite"
+        ],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Meal/{weekPlanId}": {
       "get": {
         "tags": [
           "Meal"
+        ],
+        "parameters": [
+          {
+            "name": "weekPlanId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -158,6 +390,17 @@
       "post": {
         "tags": [
           "Meal"
+        ],
+        "parameters": [
+          {
+            "name": "weekPlanId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
         ],
         "requestBody": {
           "content": {
@@ -183,7 +426,32 @@
             "description": "OK"
           }
         }
-      },
+      }
+    },
+    "/api/Meal/item/{id}": {
+      "get": {
+        "tags": [
+          "Meal"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Meal": {
       "put": {
         "tags": [
           "Meal"
@@ -215,27 +483,6 @@
       }
     },
     "/api/Meal/{id}": {
-      "get": {
-        "tags": [
-          "Meal"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
       "delete": {
         "tags": [
           "Meal"
@@ -258,32 +505,21 @@
         }
       }
     },
-    "/api/Meal/name/{mealName}": {
-      "get": {
-        "tags": [
-          "Meal"
-        ],
-        "parameters": [
-          {
-            "name": "mealName",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Supplement": {
+    "/api/Supplement/{weekPlanId}": {
       "get": {
         "tags": [
           "Supplement"
+        ],
+        "parameters": [
+          {
+            "name": "weekPlanId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -294,6 +530,17 @@
       "post": {
         "tags": [
           "Supplement"
+        ],
+        "parameters": [
+          {
+            "name": "weekPlanId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
         ],
         "requestBody": {
           "content": {
@@ -319,7 +566,32 @@
             "description": "OK"
           }
         }
-      },
+      }
+    },
+    "/api/Supplement/item/{id}": {
+      "get": {
+        "tags": [
+          "Supplement"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Supplement": {
       "put": {
         "tags": [
           "Supplement"
@@ -351,27 +623,6 @@
       }
     },
     "/api/Supplement/{id}": {
-      "get": {
-        "tags": [
-          "Supplement"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
       "delete": {
         "tags": [
           "Supplement"
@@ -464,6 +715,18 @@
         }
       }
     },
+    "/api/WeekPlan/full": {
+      "get": {
+        "tags": [
+          "WeekPlan"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/WeekPlan/{id}": {
       "get": {
         "tags": [
@@ -508,10 +771,21 @@
         }
       }
     },
-    "/api/WorkoutDay": {
+    "/api/WorkoutDay/{weekPlanId}": {
       "get": {
         "tags": [
           "WorkoutDay"
+        ],
+        "parameters": [
+          {
+            "name": "weekPlanId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -522,6 +796,17 @@
       "post": {
         "tags": [
           "WorkoutDay"
+        ],
+        "parameters": [
+          {
+            "name": "weekPlanId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
         ],
         "requestBody": {
           "content": {
@@ -547,7 +832,32 @@
             "description": "OK"
           }
         }
-      },
+      }
+    },
+    "/api/WorkoutDay/day/{id}": {
+      "get": {
+        "tags": [
+          "WorkoutDay"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/WorkoutDay": {
       "put": {
         "tags": [
           "WorkoutDay"
@@ -579,27 +889,6 @@
       }
     },
     "/api/WorkoutDay/{id}": {
-      "get": {
-        "tags": [
-          "WorkoutDay"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
       "delete": {
         "tags": [
           "WorkoutDay"
@@ -625,12 +914,97 @@
   },
   "components": {
     "schemas": {
+      "AppUser": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "userName": {
+            "type": "string",
+            "nullable": true
+          },
+          "normalizedUserName": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "normalizedEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "emailConfirmed": {
+            "type": "boolean"
+          },
+          "passwordHash": {
+            "type": "string",
+            "nullable": true
+          },
+          "securityStamp": {
+            "type": "string",
+            "nullable": true
+          },
+          "concurrencyStamp": {
+            "type": "string",
+            "nullable": true
+          },
+          "phoneNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "phoneNumberConfirmed": {
+            "type": "boolean"
+          },
+          "twoFactorEnabled": {
+            "type": "boolean"
+          },
+          "lockoutEnd": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "lockoutEnabled": {
+            "type": "boolean"
+          },
+          "accessFailedCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "firstName": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "weekPlans": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WeekPlan"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "Exercise": {
         "type": "object",
         "properties": {
           "id": {
             "type": "integer",
             "format": "int32"
+          },
+          "workoutDayId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "workoutDay": {
+            "$ref": "#/components/schemas/WorkoutDay"
           },
           "name": {
             "type": "string",
@@ -658,6 +1032,12 @@
           },
           "type": {
             "$ref": "#/components/schemas/ExerciseType"
+          },
+          "muscle": {
+            "$ref": "#/components/schemas/MuscleGroup"
+          },
+          "variation": {
+            "$ref": "#/components/schemas/ExerciseVariation"
           },
           "minReps": {
             "type": "integer",
@@ -712,12 +1092,57 @@
         "type": "integer",
         "format": "int32"
       },
+      "ExerciseVariation": {
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "LoginRequest": {
+        "required": [
+          "email",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
+          },
+          "twoFactorCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "twoFactorRecoveryCode": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "Meal": {
         "type": "object",
         "properties": {
           "id": {
             "type": "integer",
             "format": "int32"
+          },
+          "nutritionPlanId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nutritionPlan": {
+            "$ref": "#/components/schemas/NutritionPlan"
           },
           "name": {
             "type": "string",
@@ -749,12 +1174,123 @@
         },
         "additionalProperties": false
       },
+      "MuscleGroup": {
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "NutritionPlan": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "weekPlanId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "weekPlan": {
+            "$ref": "#/components/schemas/WeekPlan"
+          },
+          "totalCalories": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalProtein": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCarbs": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalFat": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "meals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Meal"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RegisterRequest": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "nullable": true
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
+          },
+          "firstName": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ResetPasswordRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "token": {
+            "type": "string",
+            "nullable": true
+          },
+          "newPassword": {
+            "type": "string",
+            "nullable": true
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
       "Supplement": {
         "type": "object",
         "properties": {
           "id": {
             "type": "integer",
             "format": "int32"
+          },
+          "weekPlanId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "weekPlan": {
+            "$ref": "#/components/schemas/WeekPlan"
           },
           "name": {
             "type": "string",
@@ -774,12 +1310,64 @@
         },
         "additionalProperties": false
       },
+      "TargetMuscle": {
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "TrainingSplitType": {
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
       "WeekPlan": {
         "type": "object",
         "properties": {
           "id": {
             "type": "integer",
             "format": "int32"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "user": {
+            "$ref": "#/components/schemas/AppUser"
+          },
+          "meals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Meal"
+            },
+            "nullable": true
+          },
+          "supplements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Supplement"
+            },
+            "nullable": true
           },
           "label": {
             "type": "string",
@@ -806,17 +1394,25 @@
             "type": "integer",
             "format": "int32"
           },
+          "weekPlanId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "weekPlan": {
+            "$ref": "#/components/schemas/WeekPlan"
+          },
           "dayNumber": {
             "type": "integer",
             "format": "int32"
           },
           "dayName": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/TrainingSplitType"
           },
           "focus": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/TargetMuscle"
+          },
+          "exerciseType": {
+            "$ref": "#/components/schemas/ExerciseType"
           },
           "isRestDay": {
             "type": "boolean"
@@ -827,30 +1423,6 @@
               "$ref": "#/components/schemas/Exercise"
             },
             "nullable": true
-          },
-          "strength": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Exercise"
-            },
-            "nullable": true,
-            "readOnly": true
-          },
-          "hypertrophy": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Exercise"
-            },
-            "nullable": true,
-            "readOnly": true
-          },
-          "definition": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Exercise"
-            },
-            "nullable": true,
-            "readOnly": true
           }
         },
         "additionalProperties": false

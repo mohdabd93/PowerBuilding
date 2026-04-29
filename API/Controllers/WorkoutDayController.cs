@@ -1,87 +1,77 @@
 ﻿using API.Services;
 using Domain.Entities;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class WorkoutDayController : ControllerBase
     {
-        private readonly WorkoutService m_workoutService;
+        private readonly WorkoutService m_service;
 
-        public WorkoutDayController(WorkoutService workoutService)
+        public WorkoutDayController(WorkoutService service)
         {
-            m_workoutService = workoutService;
+            m_service = service;
         }
 
-        //----------------------------------------------------------------
-        // GET all days
-        //----------------------------------------------------------------
-        [HttpGet]
-        public async Task<IActionResult> GetAllDays()
+        [HttpGet("{weekPlanId}")]
+        public async Task<IActionResult> GetAll(int weekPlanId)
         {
-            var days = await m_workoutService.GetAllDaysAsync();
-            if (days != null)
-                return Ok(days);
-            return NotFound();
+            var result = await m_service.GetAllByWeekPlanIdAsync(weekPlanId);
+            return Ok(result);
         }
-        //----------------------------------------------------------------
-        // GET day by id
-        //----------------------------------------------------------------
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetDayById(int id)
+        [HttpGet("day/{id}")]
+        public async Task<IActionResult> GetById(int id)
         {
-            var dayId = await m_workoutService.GetDayByIdAsync(id);
-            if (dayId != null)
-                return Ok(dayId);
+            var result = await m_service.GetByIdAsync(id);
 
-            return NotFound($"Day with Id [{id}] not found");
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
         }
-        //----------------------------------------------------------------
-        // add new Day
-        //----------------------------------------------------------------
-        [HttpPost]
-        public async Task<IActionResult> AddNewDay([FromBody] WorkoutDay workoutDay)
+
+        [HttpPost("{weekPlanId}")]
+        public async Task<IActionResult> Create(int weekPlanId, [FromBody] WorkoutDay model)
         {
             try
             {
-                var newDay = await m_workoutService.addNewDayAsync(workoutDay);
-                return CreatedAtAction(nameof(AddNewDay), new { id = newDay }, newDay);
+                var result = await m_service.AddAsync(weekPlanId, model);
+                return Ok(result);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
-        //----------------------------------------------------------------
-        // update Day
-        //----------------------------------------------------------------
+
         [HttpPut]
-        public async Task<IActionResult> UpdateDay([FromBody] WorkoutDay workoutDay)
+        public async Task<IActionResult> Update([FromBody] WorkoutDay model)
         {
-            try 
+            try
             {
-                var day = await m_workoutService.UpdateDayAsync(workoutDay);
-                    return Ok(day);
+                var result = await m_service.UpdateAsync(model);
+                return Ok(result);
             }
             catch (Exception ex)
             {
-                return NotFound(ex.Message);
+                return BadRequest(ex.Message);
             }
         }
-        //----------------------------------------------------------------
-        // delete Day
-        //----------------------------------------------------------------
+
         [HttpDelete("{id}")]
-        public async Task<IActionResult> RemoveDay(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var result = await m_workoutService.DeleteDayAsync(id);
+            var result = await m_service.DeleteAsync(id);
+
             if (!result)
-                return NotFound($"Day with Id [{id}] not found");
-            return Ok(result);
+                return NotFound();
+
+            return NoContent();
         }
     }
 }

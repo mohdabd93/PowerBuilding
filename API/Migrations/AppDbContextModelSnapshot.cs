@@ -22,6 +22,80 @@ namespace API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Domain.Entities.AppUser", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Entities.Exercise", b =>
                 {
                     b.Property<int>("Id")
@@ -62,27 +136,12 @@ namespace API.Migrations
                     b.Property<int>("Type")
                         .HasColumnType("int");
 
-                    b.Property<int?>("WorkoutDayId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("WorkoutDayId1")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("WorkoutDayId2")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("WorkoutDayId3")
+                    b.Property<int>("WorkoutDayId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("WorkoutDayId");
-
-                    b.HasIndex("WorkoutDayId1");
-
-                    b.HasIndex("WorkoutDayId2");
-
-                    b.HasIndex("WorkoutDayId3");
 
                     b.ToTable("Exercises");
                 });
@@ -115,7 +174,41 @@ namespace API.Migrations
 
                     b.HasIndex("ExerciseId");
 
-                    b.ToTable("exerciseLogs");
+                    b.ToTable("ExerciseLogs");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Invite", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Link")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Invites");
                 });
 
             modelBuilder.Entity("Domain.Entities.Meal", b =>
@@ -137,6 +230,9 @@ namespace API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("NutritionPlanId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Protein")
                         .HasColumnType("int");
 
@@ -147,9 +243,46 @@ namespace API.Migrations
                     b.Property<string>("Tip")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("WeekPlanId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("NutritionPlanId");
+
+                    b.HasIndex("WeekPlanId");
+
                     b.ToTable("Meals");
+                });
+
+            modelBuilder.Entity("Domain.Entities.NutritionPlan", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("TotalCalories")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalCarbs")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalFat")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalProtein")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WeekPlanId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WeekPlanId");
+
+                    b.ToTable("NutritionPlans");
                 });
 
             modelBuilder.Entity("Domain.Entities.Supplement", b =>
@@ -175,7 +308,12 @@ namespace API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("WeekPlanId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("WeekPlanId");
 
                     b.ToTable("Supplements");
                 });
@@ -196,7 +334,12 @@ namespace API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("WeekPlans");
                 });
@@ -223,7 +366,7 @@ namespace API.Migrations
                     b.Property<bool>("IsRestDay")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("WeekPlanId")
+                    b.Property<int>("WeekPlanId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -233,23 +376,146 @@ namespace API.Migrations
                     b.ToTable("WorkoutDays");
                 });
 
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Entities.Exercise", b =>
                 {
-                    b.HasOne("Domain.Entities.WorkoutDay", null)
-                        .WithMany("Definition")
-                        .HasForeignKey("WorkoutDayId");
-
-                    b.HasOne("Domain.Entities.WorkoutDay", null)
-                        .WithMany("Hypertrophy")
-                        .HasForeignKey("WorkoutDayId1");
-
-                    b.HasOne("Domain.Entities.WorkoutDay", null)
-                        .WithMany("Strength")
-                        .HasForeignKey("WorkoutDayId2");
-
-                    b.HasOne("Domain.Entities.WorkoutDay", null)
+                    b.HasOne("Domain.Entities.WorkoutDay", "WorkoutDay")
                         .WithMany("exercises")
-                        .HasForeignKey("WorkoutDayId3");
+                        .HasForeignKey("WorkoutDayId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("WorkoutDay");
                 });
 
             modelBuilder.Entity("Domain.Entities.ExerciseLog", b =>
@@ -263,26 +529,137 @@ namespace API.Migrations
                     b.Navigation("Exercise");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Meal", b =>
+                {
+                    b.HasOne("Domain.Entities.NutritionPlan", "NutritionPlan")
+                        .WithMany("Meals")
+                        .HasForeignKey("NutritionPlanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.WeekPlan", null)
+                        .WithMany("Meals")
+                        .HasForeignKey("WeekPlanId");
+
+                    b.Navigation("NutritionPlan");
+                });
+
+            modelBuilder.Entity("Domain.Entities.NutritionPlan", b =>
+                {
+                    b.HasOne("Domain.Entities.WeekPlan", "WeekPlan")
+                        .WithMany()
+                        .HasForeignKey("WeekPlanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("WeekPlan");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Supplement", b =>
+                {
+                    b.HasOne("Domain.Entities.WeekPlan", "WeekPlan")
+                        .WithMany("Supplements")
+                        .HasForeignKey("WeekPlanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("WeekPlan");
+                });
+
+            modelBuilder.Entity("Domain.Entities.WeekPlan", b =>
+                {
+                    b.HasOne("Domain.Entities.AppUser", "User")
+                        .WithMany("WeekPlans")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Domain.Entities.WorkoutDay", b =>
                 {
-                    b.HasOne("Domain.Entities.WeekPlan", null)
+                    b.HasOne("Domain.Entities.WeekPlan", "WeekPlan")
                         .WithMany("Days")
-                        .HasForeignKey("WeekPlanId");
+                        .HasForeignKey("WeekPlanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("WeekPlan");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
+                {
+                    b.HasOne("Domain.Entities.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
+                {
+                    b.HasOne("Domain.Entities.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
+                {
+                    b.HasOne("Domain.Entities.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Entities.AppUser", b =>
+                {
+                    b.Navigation("WeekPlans");
+                });
+
+            modelBuilder.Entity("Domain.Entities.NutritionPlan", b =>
+                {
+                    b.Navigation("Meals");
                 });
 
             modelBuilder.Entity("Domain.Entities.WeekPlan", b =>
                 {
                     b.Navigation("Days");
+
+                    b.Navigation("Meals");
+
+                    b.Navigation("Supplements");
                 });
 
             modelBuilder.Entity("Domain.Entities.WorkoutDay", b =>
                 {
-                    b.Navigation("Definition");
-
-                    b.Navigation("Hypertrophy");
-
-                    b.Navigation("Strength");
-
                     b.Navigation("exercises");
                 });
 #pragma warning restore 612, 618

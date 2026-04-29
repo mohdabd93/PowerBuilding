@@ -6,87 +6,83 @@ namespace API.Services
 {
     public class WorkoutService
     {
-        private readonly AppDbContext m_appDbContext;
+        private readonly AppDbContext m_context;
 
-        public WorkoutService(AppDbContext appDbContext)
+        public WorkoutService(AppDbContext context)
         {
-            m_appDbContext = appDbContext;
+            m_context = context;
         }
 
-        //----------------------------------------------------------------
-        // Get All Days
-        //----------------------------------------------------------------
-        public async Task<List<WorkoutDay>> GetAllDaysAsync()
+
+        //--------------------------------------------------
+        // Get All by WeekPlan
+        //--------------------------------------------------
+        public async Task<List<WorkoutDay>> GetAllByWeekPlanIdAsync(int weekPlanId)
         {
-            return await m_appDbContext.WorkoutDays
-                .Include(d => d.exercises)
+            return await m_context.WorkoutDays
+                .Where(x => x.WeekPlanId == weekPlanId)
+                .Include(x => x.exercises)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
-        //----------------------------------------------------------------
-        // Get Day By Id
-        //----------------------------------------------------------------
-        public async Task<WorkoutDay?> GetDayByIdAsync(int id)
+        //--------------------------------------------------
+        // Get By Id
+        //--------------------------------------------------
+        public async Task<WorkoutDay?> GetByIdAsync(int id)
         {
-            return await m_appDbContext.WorkoutDays
-                .Include(d => d.exercises)
-                .FirstOrDefaultAsync(d => d.Id == id);
+            return await m_context.WorkoutDays
+                .Include(x => x.exercises)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        //----------------------------------------------------------------
-        // Add New Day
-        //----------------------------------------------------------------
-        public async Task<WorkoutDay> addNewDayAsync(WorkoutDay newWorkoutDay)
+        //--------------------------------------------------
+        // Add
+        //--------------------------------------------------
+        public async Task<WorkoutDay> AddAsync(int weekPlanId, WorkoutDay day)
         {
-            var existDay = await m_appDbContext.WorkoutDays
-                .FirstOrDefaultAsync(d => d.DayNumber == newWorkoutDay.DayNumber);
+            day.WeekPlanId = weekPlanId;
 
-            if (existDay != null)
-                throw new Exception($"Day [{newWorkoutDay.DayName}] already exists");
+            m_context.WorkoutDays.Add(day);
+            await m_context.SaveChangesAsync();
 
-            var hasDuplicate = newWorkoutDay.exercises
-                .GroupBy(e => e.Name)
-                .Any(g => g.Count() > 1);
+            return day;
+        }
+         
+        //--------------------------------------------------
+        // Update
+        //--------------------------------------------------
+        public async Task<WorkoutDay> UpdateAsync(WorkoutDay day)
+        {
+            var exist = await m_context.WorkoutDays
+                .Include(x => x.exercises)
+                .FirstOrDefaultAsync(x => x.Id == day.Id);
 
-            if (hasDuplicate)
-                throw new Exception($"Duplicate exercise in Day [{newWorkoutDay.DayName}]");
+            if (exist == null)
+                throw new Exception("Not found");
 
-            await m_appDbContext.WorkoutDays.AddAsync(newWorkoutDay);
-            await m_appDbContext.SaveChangesAsync();
-            return newWorkoutDay;
+            exist.DayName = day.DayName;
+            exist.Focus = day.Focus;
+            exist.IsRestDay = day.IsRestDay;
+ 
+            exist.ExerciseType = day.ExerciseType;  
+             
+
+            await m_context.SaveChangesAsync();
+            return exist;
         }
 
-        //----------------------------------------------------------------
-        // Update Day
-        //----------------------------------------------------------------
-        public async Task<WorkoutDay> UpdateDayAsync(WorkoutDay updateWorkoutDay)
+        //--------------------------------------------------
+        // Delete
+        //--------------------------------------------------
+        public async Task<bool> DeleteAsync(int id)
         {
-            var existDay = await m_appDbContext.WorkoutDays
-                .FirstOrDefaultAsync(d => d.Id == updateWorkoutDay.Id);
+            var day = await m_context.WorkoutDays.FindAsync(id);
+            if (day == null) return false;
 
-            if (existDay == null)
-                throw new Exception($"Day with Id [{updateWorkoutDay.Id}] not found");
+            m_context.Remove(day);
+            await m_context.SaveChangesAsync();
 
-            existDay.DayName = updateWorkoutDay.DayName;
-            existDay.Focus = updateWorkoutDay.Focus;
-            existDay.IsRestDay = updateWorkoutDay.IsRestDay;
-
-            await m_appDbContext.SaveChangesAsync();
-            return existDay;
-        }
-
-        //----------------------------------------------------------------
-        // Delete Day
-        //----------------------------------------------------------------
-        public async Task<bool> DeleteDayAsync(int id)
-        {
-            var day = await m_appDbContext.WorkoutDays.FindAsync(id);
-
-            if (day == null)
-                return false;
-
-            m_appDbContext.Remove(day);
-            await m_appDbContext.SaveChangesAsync();
             return true;
         }
     }

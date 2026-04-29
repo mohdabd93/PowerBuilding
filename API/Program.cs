@@ -1,5 +1,7 @@
-using API.Data;
+﻿using API.Data;
 using API.Services;
+using Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -19,6 +21,16 @@ builder.Services.AddScoped<WeekPlanService>();
 builder.Services.AddScoped<SupplementService>();
 builder.Services.AddScoped<MealService>();
 builder.Services.AddScoped<ExerciseLogService>();
+builder.Services.AddScoped<AuthService>();
+builder.Services
+    .AddIdentity<AppUser, IdentityRole<Guid>>()
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+builder.Services.AddScoped<EmailService>();
+builder.Services.AddScoped<InviteService>();
+
+builder.Services.AddHttpContextAccessor();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

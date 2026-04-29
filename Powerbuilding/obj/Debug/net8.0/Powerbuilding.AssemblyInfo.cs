@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Powerbuilding")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b4bc778693597d81eeda802177fd2e1f943994a9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+320dede849c9e9202f36bf9f0a359289c46448eb")]
 [assembly: System.Reflection.AssemblyProductAttribute("Powerbuilding")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Powerbuilding")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

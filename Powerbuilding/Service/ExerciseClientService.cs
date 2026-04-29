@@ -27,21 +27,29 @@ namespace Powerbuilding.Service
             var response = await m_httpClient.GetAsync($"api/ExerciseLog/exercise/{exerciseId}");
 
             if (!response.IsSuccessStatusCode)
-                return new List<ExerciseLog>();  
+                return new List<ExerciseLog>();
 
             return await response.Content.ReadFromJsonAsync<List<ExerciseLog>>();
         }
 
-        public async Task<ExerciseLog?> AddExerciseLogAsync(ExerciseLog exerciseLog)
+        public async Task<ExerciseLog?> AddExerciseLogAsync(ExerciseLog log)
         {
-            var result = await m_httpClient.PostAsJsonAsync("api/ExerciseLog", exerciseLog);
-            return await result.Content.ReadFromJsonAsync<ExerciseLog>();
+            var response = await m_httpClient.PostAsJsonAsync("api/ExerciseLog", log);
+
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            return await response.Content.ReadFromJsonAsync<ExerciseLog>();
         }
 
-        public async Task<ExerciseLog?> UpdateExerciseLogAsync(ExerciseLog exerciseLog)
+        public async Task<ExerciseLog?> UpdateExerciseLogAsync(ExerciseLog log)
         {
-            var result = await m_httpClient.PutAsJsonAsync("api/ExerciseLog", exerciseLog);
-            return await result.Content.ReadFromJsonAsync<ExerciseLog>();
+            var response = await m_httpClient.PutAsJsonAsync("api/ExerciseLog", log);
+
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            return await response.Content.ReadFromJsonAsync<ExerciseLog>();
         }
 
         public async Task<bool> RemoveExerciseLogAsync(int id)

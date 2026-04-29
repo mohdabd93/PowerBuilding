@@ -1,0 +1,140 @@
+﻿@page "/workouts"
+@inject WeekPlanClientService WeekPlanService
+@inject WorkoutClientService WorkoutService
+@rendermode InteractiveServer
+<PageTitle>Workouts</PageTitle>
+
+<div class="wrap">
+
+    <!-- HEADER -->
+    <div class="sec-head">
+        <div class="sec-icon si-strength">🏋️</div>
+
+        <div>
+            <h2>Workout Plan</h2>
+            <p>Manage your training schedule</p>
+        </div>
+
+        <button class="add-btn" @onclick="OpenAddModal">＋</button>
+    </div>
+
+    <!-- EMPTY STATE -->
+    @if (days == null || !days.Any())
+    {
+        <div class="empty-state">
+            <div class="empty-icon">🏋️</div>
+
+            <h3>No workout plan found</h3>
+
+            <p>
+                Start building your program by adding your first training day.
+            </p>
+
+            <button class="primary-btn" @onclick="OpenAddModal">
+                + Create Workout
+            </button>
+        </div>
+    }
+
+    <!-- LIST -->
+    else
+    {
+    @foreach (var day in (days ?? new List<WorkoutDay>()).OrderBy(x => x.DayNumber))
+    {
+        <div class="workout-card">
+
+            <div class="workout-header">
+                <div>
+                    <div class="workout-title">
+                        Day @day.DayNumber
+                    </div>
+
+                    <div class="workout-sub">
+                        @day.DayName • @day.Focus
+                    </div>
+                </div>
+
+                @if (day.IsRestDay)
+                {
+                    <span class="badge rest">Rest Day</span>
+                }
+                else
+                {
+                    <span class="badge active">Training</span>
+                }
+            </div>
+
+        </div>
+    }
+  }
+
+</div>
+
+<!-- MODAL -->
+@if (showModal)
+{
+    <div class="modal-overlay" @onclick="CloseModal">
+
+        <div class="modal-card"
+             @onclick:stopPropagation="true"
+             @key="modalKey">
+
+            <h3>Create Workout Day</h3>
+
+            <input type="number" @bind="model.DayNumber" placeholder="Day Number" />
+
+            <input @bind="model.Focus" placeholder="Target Muscle / Focus" />
+
+            <label class="checkbox">
+                <input type="checkbox" @bind="model.IsRestDay" />
+                Rest Day
+            </label>
+
+            <div class="modal-actions">
+                <button class="primary-btn" @onclick="Save">Save</button>
+                <button class="secondary-btn" @onclick="CloseModal">Cancel</button>
+            </div>
+
+        </div>
+
+    </div>
+}
+
+@code {
+
+    private List<WorkoutDay> days;
+    private bool showModal;
+    private WorkoutDay model = new();
+
+    private int weekPlanId = 1;
+
+    private Guid modalKey = Guid.NewGuid();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var week = await WeekPlanService.GetFullWeekPlanAsync();
+        days = week?.Days ?? new List<WorkoutDay>();
+    }
+
+    private void OpenAddModal()
+    {
+        model = new WorkoutDay();
+        modalKey = Guid.NewGuid(); // force re-render modal
+        showModal = true;
+    }
+
+    private void CloseModal()
+    {
+        showModal = false;
+    }
+
+    private async Task Save()
+    {
+        await WorkoutService.AddNewDayAsync(model);
+
+        showModal = false;
+
+        var week = await WeekPlanService.GetFullWeekPlanAsync();
+        days = week?.Days ?? new List<WorkoutDay>();
+    }
+}

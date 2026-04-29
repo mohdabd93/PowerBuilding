@@ -1,88 +1,61 @@
 ﻿using API.Services;
 using Domain.Entities;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class SupplementController : ControllerBase
     {
-        private readonly SupplementService m_supplement;
+        private readonly SupplementService m_service;
 
-        public SupplementController(SupplementService supplement)
+        public SupplementController(SupplementService service)
         {
-            m_supplement = supplement;
+            m_service = service;
         }
 
-        //--------------------------------------------------
-        // GET api/supplement
-        //--------------------------------------------------
-        [HttpGet]
-        public async Task<IActionResult> GetAllSupplementsAsync()
+        [HttpGet("{weekPlanId}")]
+        public async Task<IActionResult> GetAll(int weekPlanId)
         {
-            var allSupplements = await m_supplement.GetAllSupplementsAsync();
-            if (allSupplements == null)
-                return NoContent();
-            return Ok(allSupplements);
+            var result = await m_service.GetAllByWeekPlanIdAsync(weekPlanId);
+            return Ok(result);
         }
 
-        //--------------------------------------------------
-        // GET api/supplement/5
-        //--------------------------------------------------
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetSupplementByIdAsync(int id)
+        [HttpGet("item/{id}")]
+        public async Task<IActionResult> GetById(int id)
         {
-            var supplement = await m_supplement.GetSupplementByIdAsync(id);
-            if (supplement == null)
-                return NotFound($"Supplement with Id [{id}] not found");
-            return Ok(supplement);
+            var result = await m_service.GetByIdAsync(id);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
         }
 
-        //--------------------------------------------------
-        // POST api/supplement
-        //--------------------------------------------------
-        [HttpPost]
-        public async Task<IActionResult> AddNewSupplement([FromBody] Supplement newSupplement)
+        [HttpPost("{weekPlanId}")]
+        public async Task<IActionResult> Create(int weekPlanId, [FromBody] Supplement model)
         {
-            try
-            {
-                var newSup = await m_supplement.AddSupplementAsync(newSupplement);
-                return CreatedAtAction(nameof(GetSupplementByIdAsync), new { id = newSup.Id }, newSup);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var result = await m_service.AddAsync(weekPlanId, model);
+            return Ok(result);
         }
-
-        //--------------------------------------------------
-        // PUT api/supplement
-        //--------------------------------------------------
         [HttpPut]
-        public async Task<IActionResult> UpdateSupplement([FromBody] Supplement updatedSupplement)
+        public async Task<IActionResult> Update([FromBody] Supplement model)
         {
-            try
-            {
-                var updated = await m_supplement.UpdateSupplementAsync(updatedSupplement);
-                return Ok(updated);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var result = await m_service.UpdateAsync(model);
+            return Ok(result);
         }
 
-        //--------------------------------------------------
-        // DELETE api/supplement/5
-        //--------------------------------------------------
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSupplement(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var result = await m_supplement.DeleteSupplemet(id);
+            var result = await m_service.DeleteAsync(id);
+
             if (!result)
-                return NotFound($"Supplement with Id [{id}] not found");
+                return NotFound();
+
             return NoContent();
         }
     }

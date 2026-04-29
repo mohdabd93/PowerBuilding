@@ -19,7 +19,7 @@ namespace API.Services
         //--------------------------------------------------
         public async Task<List<ExerciseLog>?> GetExerciseLogsAsync()
         {
-            return await m_appDbContext.exerciseLogs.Include(x => x.Exercise).ToListAsync();
+            return await m_appDbContext.ExerciseLogs.Include(x => x.Exercise).ToListAsync();
         }
 
 
@@ -28,7 +28,7 @@ namespace API.Services
         //--------------------------------------------------
         public async Task<ExerciseLog?> GetExerciseLogByIdAsync(int id)
         {
-            return await m_appDbContext.exerciseLogs.FirstOrDefaultAsync(x => x.Id == id);
+            return await m_appDbContext.ExerciseLogs.FirstOrDefaultAsync(x => x.Id == id);
         }
 
         //--------------------------------------------------
@@ -40,7 +40,7 @@ namespace API.Services
 
             if (exercise == null)
                 throw new Exception("Invalid ExerciseId");
-            await m_appDbContext.exerciseLogs.AddAsync(newLog);
+            await m_appDbContext.ExerciseLogs.AddAsync(newLog);
             await m_appDbContext.SaveChangesAsync();
             return newLog;
         }
@@ -49,7 +49,7 @@ namespace API.Services
         //--------------------------------------------------
         public async Task<ExerciseLog?> UpdateExerciseAsync(ExerciseLog updateLog)
         {
-            var exist = await m_appDbContext.exerciseLogs.FirstOrDefaultAsync(lId => lId.Id == updateLog.Id);
+            var exist = await m_appDbContext.ExerciseLogs.FirstOrDefaultAsync(lId => lId.Id == updateLog.Id);
             if (exist == null)
                 throw new Exception("This Exercise Log is not exisit");
             exist.Reps = updateLog.Reps;
@@ -65,7 +65,7 @@ namespace API.Services
         //--------------------------------------------------
         public async Task<bool> RemoveExerciseAsync(int id)
         {
-            var exist = await m_appDbContext.exerciseLogs.FirstOrDefaultAsync(lId => lId.Id == id);
+            var exist = await m_appDbContext.ExerciseLogs.FirstOrDefaultAsync(lId => lId.Id == id);
             if (exist == null)
                 throw new Exception("This Exercise Log is not exisit");
             m_appDbContext.Remove(exist);
@@ -77,7 +77,7 @@ namespace API.Services
         //--------------------------------------------------
         public async Task<List<ExerciseLog>> GetLastLogsByExerciseIdAsync(int exerciseId)
         {
-            return await m_appDbContext.exerciseLogs
+            return await m_appDbContext.ExerciseLogs
                 .Where(x => x.ExerciseId == exerciseId)
                 .Include(x => x.Exercise)
                 .OrderByDescending(x => x.Date)

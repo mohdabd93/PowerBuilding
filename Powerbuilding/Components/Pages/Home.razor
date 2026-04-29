@@ -1,237 +1,162 @@
-﻿@page "/"
+﻿
+@page "/"
 @rendermode InteractiveServer
+@inherits AuthenticatedPage
+
 @inject NavigationManager Navigation
+@inject WeekPlanClientService WeekPlanService
 @inject WorkoutClientService WorkoutService
-@inject MealClientService MealService
-@inject SupplementClientService SupplementService
+@inject AuthClientService AuthService
+@inject IJSRuntime JS
 
-<PageTitle>Powerbuilding</PageTitle>
+<PageTitle>Powerbuilding Dashboard</PageTitle>
 
-<div class="wrap">
+<div class="dashboard">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <div class="brand">⚡ Powerbuilding</div>
+
+        <div class="nav-right">
+            <button class="icon-btn" @onclick="ToggleTheme">
+                @(isDark ? "🌙" : "☀️")
+            </button>
+
+            <div class="user" @onclick="ToggleDropdown">
+                <div class="avatar">@Initial</div>
+                <span class="name">@UserSession.FirstName</span>
+            </div>
+
+            @if (showDropdown)
+            {
+                <div class="dropdown">
+
+                    <div class="dropdown-header">
+                        <div class="big-avatar">@Initial</div>
+                        <div>
+                              <div class="d-email">@UserSession.Email</div>
+                            <div class="d-name">@UserSession.FirstName @UserSession.LastName</div>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <!-- PROFILE -->
+                    <button class="drop-item" @onclick="GoToProfile">
+                        👤 Profile
+                    </button>
+
+                    <!-- SETTINGS -->
+                    <button class="drop-item" @onclick="GoToSettings">
+                        ⚙️ Settings
+                    </button>
+
+                    <div class="divider"></div>
+
+                    <!-- LOGOUT -->
+                    <button class="drop-item logout" @onclick="Logout">
+                        🚪 Logout
+                    </button>
+
+                </div>
+            }
+        </div>
+    </div>
 
     <!-- HERO -->
     <div class="hero">
-        <div class="hero-badge">⚡ Powerbuilding Protocol</div>
-        <h1>Strength. <em>Hypertrophy.</em> Definition.</h1>
-        <p class="hero-sub">Discipline builds what motivation can't.</p>
+        <div class="hero-badge">⚡ Dashboard</div>
+        <h1>Train. Track. Progress.</h1>
+        <p class="hero-sub">Everything you need in one place.</p>
     </div>
 
-    <!-- PHILOSOPHY -->
-    <div class="philo">
-        <div class="philo-item">
-            <div class="philo-icon">🔴</div>
-            <div class="philo-name">Strength</div>
-            <div class="philo-desc">3–5 reps heavy loads</div>
+    <!-- QUICK STATS -->
+    <div class="stats">
+        <div class="stat">
+            <div class="stat-val">@days?.Count ?? 0</div>
+            <div class="stat-label">Workout Days</div>
         </div>
-        <div class="philo-item">
-            <div class="philo-icon">🟡</div>
-            <div class="philo-name">Size</div>
-            <div class="philo-desc">8–12 reps hypertrophy</div>
+
+        <div class="stat">
+            <div class="stat-val">@meals?.Count ?? 0</div>
+            <div class="stat-label">Meals</div>
         </div>
-        <div class="philo-item">
-            <div class="philo-icon">🔵</div>
-            <div class="philo-name">Definition</div>
-            <div class="philo-desc">15–20 reps + cardio</div>
+
+        <div class="stat">
+            <div class="stat-val">@supplements?.Count ?? 0</div>
+            <div class="stat-label">Supplements</div>
         </div>
     </div>
 
-    <!-- TABS -->
-    <div class="tabs">
-        <button class="@GetTabClass("training")" @onclick='() => activeTab = "training"'>🏋️ Training</button>
-        <button class="@GetTabClass("nutrition")" @onclick='() => activeTab = "nutrition"'>🍽️ Nutrition</button>
-        <button class="@GetTabClass("supplements")" @onclick='() => activeTab = "supplements"'>💊 Supplements</button>
-        <button class="@GetTabClass("progress")" @onclick='() => activeTab = "progress"'>📈 Progress</button>
-    </div>
+    <!-- MAIN CARDS -->
+    <div class="grid">
 
-    <!-- TRAINING -->
-    <div class="@GetPaneClass("training")">
-
-        <div class="sec-head">
-            <div class="sec-icon si-strength">🏋️</div>
-            <div>
-                <h2>Powerbuilding Program</h2>
-                <p>Strength → Hypertrophy → Definition</p>
-            </div>
+        <div class="card" @onclick='() => Navigation.NavigateTo("/workouts")'>
+            <div class="card-title">🏋️ Training</div>
+            <div class="card-desc">Manage your workout plan</div>
         </div>
 
-        @if (days == null)
-        {
-            <div class="loading"><div class="spinner"></div>Loading...</div>
-        }
-        else
-        {
-            @foreach (var day in days.OrderBy(d => d.DayNumber))
-            {
-                <div class="day">
-                    <div class="day-hd" @onclick="() => ToggleDay(day.Id)">
-
-                        <div class="day-left">
-                            <div class="dnum @(day.IsRestDay ? "d-rest" : "d-active")">
-                                @day.DayNumber
-                            </div>
-                            <div>
-                                <div class="dname">@day.DayName</div>
-                                <div class="dfocus">@day.Focus</div>
-                            </div>
-                        </div>
-
-                        <span class="dbadge">
-                            @(day.IsRestDay ? "Rest Day" : $"{day.exercises.Count} exercises")
-                        </span>
-                    </div>
-
-                    <div class="day-bd @(expandedDayId == day.Id ? "open" : "")">
-
-                        @if (day.IsRestDay)
-                        {
-                            <p class="rest-tip">Recovery day: walk, stretch, hydrate, sleep.</p>
-                        }
-                        else
-                        {
-                            @foreach (var group in day.exercises.GroupBy(e => e.Type))
-                            {
-                                <div class="phase-label">@group.Key</div>
-
-                                <table class="ex-table">
-                                    <tr>
-                                        <th>Exercise</th>
-                                        <th>Sets</th>
-                                        <th>Reps</th>
-                                        <th>Rest</th>
-                                    </tr>
-
-                                    @foreach (var ex in group)
-                                    {
-                                        <tr>
-                                            <td><a href="/progress/@ex.Id">@ex.Name</a></td> 
-                                            <td>@ex.Sets</td>
-                                            <td>@ex.Reps</td>
-                                            <td>@ex.Rest</td>
-                                        </tr>
-                                    }
-                                </table>
-                            }
-                        }
-
-                    </div>
-                </div>
-            }
-        }
-    </div>
-
-    <!-- NUTRITION -->
-    <div class="@GetPaneClass("nutrition")">
-
-        <div class="sec-head">
-            <div class="sec-icon si-food">🍽️</div>
-            <div>
-                <h2>Nutrition</h2>
-                <p>High protein structured meals</p>
-            </div>
+        <div class="card" @onclick='() => Navigation.NavigateTo("/nutrition")'>
+            <div class="card-title">🍽️ Nutrition</div>
+            <div class="card-desc">Meal structure & macros</div>
         </div>
 
-        @if (meals == null)
-        {
-            <div class="loading"><div class="spinner"></div>Loading...</div>
-        }
-        else
-        {
-            @foreach (var meal in meals)
-            {
-                <div class="meal">
-                    <div class="meal-hd">
-                        <div>
-                            <div class="meal-name">@meal.Name</div>
-                            <div class="meal-kcal">@meal.Calories kcal | @meal.Protein g</div>
-                        </div>
-                        <span class="meal-time">@meal.Time</span>
-                    </div>
-                </div>
-            }
-        }
-
-    </div>
-
-    <!-- SUPPLEMENTS -->
-    <div class="@GetPaneClass("supplements")">
-
-        <div class="sec-head">
-            <div class="sec-icon si-supp">💊</div>
-            <div>
-                <h2>Supplements</h2>
-                <p>Only essentials</p>
-            </div>
+        <div class="card" @onclick='() => Navigation.NavigateTo("/supplements")'>
+            <div class="card-title">💊 Supplements</div>
+            <div class="card-desc">Stack & timing</div>
         </div>
 
-        @if (supplements != null)
-        {
-            @foreach (var s in supplements)
-            {
-                <div class="supp-card">
-                    <div class="supp-ico">💊</div>
-                    <div>
-                        <div class="supp-name">@s.Name</div>
-                        <div class="supp-dose">@s.Dose</div>
-                        <div class="supp-desc">@s.Description</div>
-                    </div>
-                </div>
-            }
-        }
-
-    </div>
-
-    <!-- PROGRESS -->
-    <div class="@GetPaneClass("progress")">
-
-        <div class="sec-head">
-            <div class="sec-icon si-prog">📈</div>
-            <div>
-                <h2>Progress</h2>
-                <p>Track everything</p>
-            </div>
-        </div>
-
-        <div class="prog-card">
-            <div class="prog-title">Progress Rules</div>
-            <div class="prog-sub">
-                Increase weight or reps weekly. Consistency > perfection.
-            </div>
+        <div class="card" @onclick='() => Navigation.NavigateTo("/progress")'>
+            <div class="card-title">📈 Progress</div>
+            <div class="card-desc">Track improvements</div>
         </div>
 
     </div>
 
 </div>
 
-<!-- NAV -->
-<nav class="bottom-nav">
-    <button class="nav-btn @(activeTab == "training" ? "active" : "")" @onclick='() => activeTab = "training"'>🏋️</button>
-    <button class="nav-btn @(activeTab == "nutrition" ? "active" : "")" @onclick='() => activeTab = "nutrition"'>🍽️</button>
-    <button class="nav-btn @(activeTab == "supplements" ? "active" : "")" @onclick='() => activeTab = "supplements"'>💊</button>
-    <button class="nav-btn @(activeTab == "progress" ? "active" : "")" @onclick='() => activeTab = "progress"'>📈</button>
-</nav>
-
 @code {
-    private string activeTab = "training";
+
     private List<WorkoutDay>? days;
     private List<Meal>? meals;
     private List<Supplement>? supplements;
-    private int? expandedDayId;
 
-    protected override async Task OnInitializedAsync()
+    private bool showDropdown;
+    private bool isDark;
+
+    private string Initial => UserSession.UserName?.FirstOrDefault().ToString() ?? "?";
+
+    protected override async Task OnPageLoadAsync()
     {
-        days = await WorkoutService.GetAllDaysAsync();
-        meals = await MealService.GetAllMealsAsync();
-        supplements = await SupplementService.GetAllSupplementsAsync();
+        var week = await WeekPlanService.GetFullWeekPlanAsync();
+        days = week?.Days;
+        meals = week?.Meals;
+        supplements = week?.Supplements;
     }
 
-    private void ToggleDay(int id)
+    private void ToggleDropdown()
+        => showDropdown = !showDropdown;
+
+    private async Task Logout()
     {
-        expandedDayId = expandedDayId == id ? null : id;
+        await AuthService.LogoutAsync();
+        Navigation.NavigateTo("/login", forceLoad: true);
     }
 
-    private string GetTabClass(string tab)
-        => tab == activeTab ? "tab on" : "tab";
+    private void ToggleTheme()
+    {
+        isDark = !isDark;
+        JS.InvokeVoidAsync("document.body.setAttribute", "data-theme", isDark ? "dark" : "light");
+    }
+    private void GoToProfile()
+    {
+        showDropdown = false;
+        Navigation.NavigateTo("/profile");
+    }
 
-    private string GetPaneClass(string tab)
-        => tab == activeTab ? "pane on" : "pane";
+    private void GoToSettings()
+    {
+        showDropdown = false;
+        Navigation.NavigateTo("/settings");
+    }
 }

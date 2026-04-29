@@ -1,30 +1,53 @@
-using Domain.Entities;
+using Blazorise;
+using Microsoft.AspNetCore.Components.Authorization;
 using Powerbuilding.Components;
 using Powerbuilding.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// -----------------------------------
+// Blazor
+// -----------------------------------
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+// -----------------------------------
+// HTTP CLIENT
+// -----------------------------------
+builder.Services.AddHttpClient("API", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7151/");
+});
+
+// -----------------------------------
+// SERVICES
+// -----------------------------------
 builder.Services.AddScoped<WorkoutClientService>();
 builder.Services.AddScoped<MealClientService>();
 builder.Services.AddScoped<SupplementClientService>();
 builder.Services.AddScoped<ExerciseClientService>();
-builder.Services.AddRazorComponents().AddInteractiveServerComponents();
-builder.Services.AddHttpClient("API", client => client.BaseAddress = new Uri("https://localhost:7151/"));
+builder.Services.AddScoped<AuthClientService>();
+builder.Services.AddScoped<WeekPlanClientService>();
+
+builder.Services.AddScoped<UserSessionService>();
+builder.Services.AddScoped<AuthenticatedPage>();
+ 
+// -----------------------------------
+// AUTH
+// -----------------------------------
+builder.Services.AddAuthorizationCore();
+ 
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// -----------------------------------
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
 app.UseAntiforgery();
 
