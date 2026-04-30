@@ -31,7 +31,7 @@ builder.Services.AddScoped<WeekPlanClientService>();
 
 builder.Services.AddScoped<UserSessionService>();
 builder.Services.AddScoped<AuthenticatedPage>();
- 
+builder.Services.AddScoped<ExerciseTemplateClientService>();
 // -----------------------------------
 // AUTH
 // -----------------------------------

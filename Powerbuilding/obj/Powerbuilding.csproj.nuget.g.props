@@ -18,4 +18,7 @@
     <Import Project="$(NuGetPackageRoot)blazorise\2.1.1\buildTransitive\Blazorise.props" Condition="Exists('$(NuGetPackageRoot)blazorise\2.1.1\buildTransitive\Blazorise.props')" />
     <Import Project="$(NuGetPackageRoot)blazorise.charts\2.1.1\buildTransitive\Blazorise.Charts.props" Condition="Exists('$(NuGetPackageRoot)blazorise.charts\2.1.1\buildTransitive\Blazorise.Charts.props')" />
   </ImportGroup>
+  <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <PkgNewtonsoft_Json Condition=" '$(PkgNewtonsoft_Json)' == '' ">C:\Users\Mo\.nuget\packages\newtonsoft.json\9.0.1</PkgNewtonsoft_Json>
+  </PropertyGroup>
 </Project>

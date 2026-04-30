@@ -22,16 +22,22 @@ namespace Powerbuilding.Service
             return await m_httpClient.GetFromJsonAsync<WorkoutDay>($"api/WorkoutDay/{id}");
         }
 
-        public async Task<WorkoutDay?> AddNewDayAsync(WorkoutDay newDay)
+        //public async Task<WorkoutDay?> AddNewDayAsync(WorkoutDay newDay)
+        public async Task<WorkoutDay> AddNewDayAsync(int weekPlanId, WorkoutDay newDay)
         {
-            var response = await m_httpClient.PostAsJsonAsync("api/WorkoutDay", newDay);
+            var response = await m_httpClient.PostAsJsonAsync(
+                $"api/WorkoutDay/{weekPlanId}",
+                newDay
+            );
+
+            var error = await response.Content.ReadAsStringAsync();
 
             if (!response.IsSuccessStatusCode)
-                return null;
+                throw new Exception($"API Error: {error}"); // now you'll see the full message
 
-            return await response.Content.ReadFromJsonAsync<WorkoutDay>();
+            return await response.Content.ReadFromJsonAsync<WorkoutDay>()
+                   ?? throw new Exception("Invalid response");
         }
-
         public async Task<WorkoutDay?> UpdateDayAsync(WorkoutDay updatedDay)
         {
             var response = await m_httpClient.PutAsJsonAsync("api/WorkoutDay", updatedDay);

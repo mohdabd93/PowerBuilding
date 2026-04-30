@@ -206,6 +206,101 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "API.Controllers.ExerciseTemplateController",
+    "Method": "GetAll",
+    "RelativePath": "api/ExerciseTemplate",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.ExerciseTemplateController",
+    "Method": "Create",
+    "RelativePath": "api/ExerciseTemplate",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "Domain.Entities.ExerciseTemplate",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.ExerciseTemplateController",
+    "Method": "Update",
+    "RelativePath": "api/ExerciseTemplate",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "Domain.Entities.ExerciseTemplate",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.ExerciseTemplateController",
+    "Method": "Delete",
+    "RelativePath": "api/ExerciseTemplate/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.ExerciseTemplateController",
+    "Method": "GetFiltered",
+    "RelativePath": "api/ExerciseTemplate/filtered/{muscle}/{type}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "muscle",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "type",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.ExerciseTemplateController",
+    "Method": "GetByMuscle",
+    "RelativePath": "api/ExerciseTemplate/muscle/{muscle}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "muscle",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "API.Controllers.InviteController",
     "Method": "Create",
     "RelativePath": "api/invite",

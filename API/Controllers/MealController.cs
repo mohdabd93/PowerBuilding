@@ -7,7 +7,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class MealController : ControllerBase
     {
         private readonly MealService m_service;

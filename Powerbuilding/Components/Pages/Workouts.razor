@@ -1,140 +1,359 @@
 ﻿@page "/workouts"
+@rendermode InteractiveServer
+
 @inject WeekPlanClientService WeekPlanService
 @inject WorkoutClientService WorkoutService
-@rendermode InteractiveServer
+@inject ExerciseTemplateClientService TemplateService
+
 <PageTitle>Workouts</PageTitle>
 
 <div class="wrap">
 
     <!-- HEADER -->
     <div class="sec-head">
-        <div class="sec-icon si-strength">🏋️</div>
-
-        <div>
-            <h2>Workout Plan</h2>
-            <p>Manage your training schedule</p>
+        <div class="left">
+            <div class="sec-icon">🏋️</div>
+            <div>
+                <h2>Workout Plan</h2>
+                <p>Build your training program</p>
+            </div>
         </div>
 
-        <button class="add-btn" @onclick="OpenAddModal">＋</button>
+        <button class="add-btn" @onclick="OpenModal">＋</button>
     </div>
 
-    <!-- EMPTY STATE -->
-    @if (days == null || !days.Any())
+    <!-- LOADING -->
+    @if (pageLoading)
+    {
+        <div class="empty-state">
+            <div class="loader"></div>
+            <h3>Loading...</h3>
+        </div>
+    }
+    else if (!days.Any())
     {
         <div class="empty-state">
             <div class="empty-icon">🏋️</div>
-
-            <h3>No workout plan found</h3>
-
-            <p>
-                Start building your program by adding your first training day.
-            </p>
-
-            <button class="primary-btn" @onclick="OpenAddModal">
-                + Create Workout
-            </button>
+            <h3>No workout days yet</h3>
+            <p>Press ＋ to build your first training day</p>
         </div>
     }
-
-    <!-- LIST -->
     else
     {
-    @foreach (var day in (days ?? new List<WorkoutDay>()).OrderBy(x => x.DayNumber))
-    {
-        <div class="workout-card">
+        <div class="grid">
+            @foreach (var day in days.OrderBy(x => x.DayNumber))
+            {
+                <div class="workout-card">
 
-            <div class="workout-header">
-                <div>
-                    <div class="workout-title">
-                        Day @day.DayNumber
+                    <div class="workout-header">
+                        <div>
+                            <div class="workout-title">Day @day.DayNumber</div>
+                            <div class="workout-sub">@day.Focus • @day.ExerciseType</div>
+                        </div>
+
+                        <span class="badge @(day.IsRestDay ? "rest" : "active")">
+                            @(day.IsRestDay ? "Rest" : "Training")
+                        </span>
                     </div>
 
-                    <div class="workout-sub">
-                        @day.DayName • @day.Focus
-                    </div>
+                    @if (day.exercises?.Any() == true)
+                    {
+                        <div class="exercise-list">
+                            @foreach (var ex in day.exercises)
+                            {
+                                <div class="exercise-item">
+                                    <strong>@(ex.ExerciseTemplate?.Name ?? $"Exercise #{ex.ExerciseTemplateId}")</strong>
+                                    <div class="ex-sub">
+                                        @ex.Sets sets • @ex.MinReps-@ex.MaxReps reps • @ex.Rest
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="no-ex">No exercises added</div>
+                    }
+
                 </div>
-
-                @if (day.IsRestDay)
-                {
-                    <span class="badge rest">Rest Day</span>
-                }
-                else
-                {
-                    <span class="badge active">Training</span>
-                }
-            </div>
-
+            }
         </div>
     }
-  }
-
 </div>
 
 <!-- MODAL -->
 @if (showModal)
 {
-    <div class="modal-overlay" @onclick="CloseModal">
+    <div class="modal-overlay">
 
-        <div class="modal-card"
-             @onclick:stopPropagation="true"
-             @key="modalKey">
+        <div class="modal-card">
+
+            <button class="close-btn" @onclick="CloseModal">✕</button>
 
             <h3>Create Workout Day</h3>
+            <div class="modal-sub">Build your perfect training session</div>
 
-            <input type="number" @bind="model.DayNumber" placeholder="Day Number" />
+            <div class="progress">
+                <div class="bar" style="width:@(currentStep * 33)%"></div>
+            </div>
 
-            <input @bind="model.Focus" placeholder="Target Muscle / Focus" />
+            <!-- STEP 1 -->
+            @if (currentStep == 1)
+            {
+                <label>Exercise Type</label>
 
-            <label class="checkbox">
-                <input type="checkbox" @bind="model.IsRestDay" />
-                Rest Day
-            </label>
+                <InputSelect @bind-Value="selectedType" class="form-select">
+                    <option value="">-- Select type --</option>
+                    @foreach (var val in Enum.GetValues<ExerciseType>())
+                    {
+                        <option value="@val">@val</option>
+                    }
+                </InputSelect>
+            }
 
+            <!-- STEP 2 -->
+            @if (currentStep == 2)
+            {
+                <label>Target Muscle</label>
+
+                <InputSelect @bind-Value="selectedMuscle" class="form-select">
+                    <option value="">-- Select muscle --</option>
+                    @foreach (var val in Enum.GetValues<TargetMuscle>())
+                    {
+                        <option value="@val">@val</option>
+                    }
+                </InputSelect>
+            }
+
+            <!-- STEP 3 -->
+            @if (currentStep == 3)
+            {
+                @if (templatesLoading)
+                {
+                    <div class="loader small"></div>
+                }
+                else if (loadError != null)
+                {
+                    <div class="error">@loadError</div>
+                }
+                else if (!templates.Any())
+                {
+                    <div class="no-ex">No exercises found</div>
+                }
+                else
+                {
+                    <div class="grid-2">
+                        @foreach (var t in templates)
+                        {
+                            var added = model.exercises.Any(e => e.ExerciseTemplateId == t.Id);
+
+                            <button class="exercise-btn @(added ? "added" : "")"
+                                    @onclick="() => AddExercise(t)"
+                                    disabled="@added">
+
+                                <strong>@t.Name</strong>
+                                <span>@(added ? "Added ✔" : $"{t.Muscle} • {t.DefaultType}")</span>
+                            </button>
+                        }
+                    </div>
+                }
+            }
+
+            <!-- ACTIONS -->
             <div class="modal-actions">
-                <button class="primary-btn" @onclick="Save">Save</button>
-                <button class="secondary-btn" @onclick="CloseModal">Cancel</button>
+
+                <button class="secondary-btn"
+                        @onclick="Prev"
+                        disabled="@(currentStep == 1)">
+                    Back
+                </button>
+
+                @if (currentStep < 3)
+                {
+                    <button class="primary-btn"
+                            @onclick="Next"
+                            disabled="@(currentStep == 1 && selectedType == null || currentStep == 2 && selectedMuscle == null)">
+                        Next
+                    </button>
+                }
+                else
+                {
+                    <button class="primary-btn"
+                            @onclick="Save"
+                            disabled="@(model.exercises == null || !model.exercises.Any())">
+                        Save
+                    </button>
+                }
+
             </div>
 
         </div>
-
     </div>
 }
 
 @code {
+    private bool allowClose = false;
+    private List<WorkoutDay> days = new();
+    private List<ExerciseTemplate> templates = new();
+    private WorkoutDay model = new() { exercises = new List<Exercise>() };
 
-    private List<WorkoutDay> days;
+    private ExerciseType? selectedType;
+    private TargetMuscle? selectedMuscle;
+
     private bool showModal;
-    private WorkoutDay model = new();
-
-    private int weekPlanId = 1;
-
-    private Guid modalKey = Guid.NewGuid();
+    private bool templatesLoading;
+    private bool pageLoading = true;
+    private string? loadError;
+    private int currentStep = 1;
+    private int weekPlanId = 0;
 
     protected override async Task OnInitializedAsync()
     {
-        var week = await WeekPlanService.GetFullWeekPlanAsync();
-        days = week?.Days ?? new List<WorkoutDay>();
+        await LoadWeekPlan();
     }
 
-    private void OpenAddModal()
+    private async Task LoadWeekPlan()
     {
-        model = new WorkoutDay();
-        modalKey = Guid.NewGuid(); // force re-render modal
+        pageLoading = true;
+
+        try
+        {
+            var week = await WeekPlanService.GetFullWeekPlanAsync();
+
+            if (week == null)
+            {
+                days = new();
+                return;
+            }
+
+            days = week.Days?.ToList() ?? new List<WorkoutDay>();
+            weekPlanId = week.Id;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($">>> LoadWeekPlan error: {ex.Message}");
+            days = new();
+        }
+        finally
+        {
+            pageLoading = false;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+    private void OpenModal()
+    {
+        model = new WorkoutDay { exercises = new List<Exercise>() };
+        templates.Clear();
+        selectedType = null;
+        selectedMuscle = null;
+        loadError = null;
+        currentStep = 1;
         showModal = true;
     }
 
-    private void CloseModal()
+    private void CloseModal() => showModal = false;
+
+    // private void OnTypeSelectChanged(ChangeEventArgs e)
+    // {
+    //     if (int.TryParse(e.Value?.ToString(), out var val))
+    //         selectedType = (ExerciseType)val;
+    //     else
+    //         selectedType = null;
+    // }
+
+    // private void OnMuscleSelectChanged(ChangeEventArgs e)
+    // {
+    //     if (int.TryParse(e.Value?.ToString(), out var val))
+    //         selectedMuscle = (TargetMuscle)val;
+    //     else
+    //         selectedMuscle = null;
+    // }
+
+    private async Task Next()
     {
-        showModal = false;
+        currentStep++;
+        if (currentStep == 3)
+            await LoadTemplates();
     }
 
+    private void Prev() => currentStep = Math.Max(1, currentStep - 1);
+
+    private async Task LoadTemplates()
+    {
+        templates.Clear();
+        loadError = null;
+
+        if (selectedMuscle == null || selectedType == null)
+            return;
+
+        templatesLoading = true;
+        StateHasChanged();
+
+        try
+        {
+            templates = await TemplateService.GetFiltered(selectedMuscle.Value, selectedType.Value);
+        }
+        catch (Exception ex)
+        {
+            loadError = ex.Message;
+        }
+        finally
+        {
+            templatesLoading = false;
+            StateHasChanged();
+        }
+    }
+    private void AddExercise(ExerciseTemplate t)
+    {
+        if (model.exercises.Any(e => e.ExerciseTemplateId == t.Id))
+            return;
+
+        model.exercises.Add(new Exercise
+        {
+            ExerciseTemplateId = t.Id,
+            ExerciseTemplate = t,
+            Sets = 3,
+            MinReps = 8,
+            MaxReps = 12,
+            Rest = "60s"
+        });
+
+        model.exercises = model.exercises.ToList();
+    }
     private async Task Save()
     {
-        await WorkoutService.AddNewDayAsync(model);
+        try
+        {
+            var payload = new WorkoutDay
+            {
+                WeekPlanId = weekPlanId,  
+                Focus = selectedMuscle ?? model.Focus,
+                ExerciseType = selectedType ?? model.ExerciseType,
 
-        showModal = false;
+                exercises = model.exercises.Select(e => new Exercise
+                {
+                    ExerciseTemplateId = e.ExerciseTemplateId,
+                    Sets = e.Sets,
+                    MinReps = e.MinReps,
+                    MaxReps = e.MaxReps,
+                    Rest = e.Rest
+                }).ToList()
+            };
 
-        var week = await WeekPlanService.GetFullWeekPlanAsync();
-        days = week?.Days ?? new List<WorkoutDay>();
+            await WorkoutService.AddNewDayAsync(weekPlanId, payload);
+
+            showModal = false;
+            await LoadWeekPlan();
+        }
+        catch (Exception ex)
+        {
+            loadError = ex.InnerException?.Message ?? ex.Message;
+        }
+    }
+
+    private void HandleOverlayClick()
+    {
+        if (allowClose)
+            CloseModal();
     }
 }

@@ -53,3 +53,10 @@ C:\Users\Mo\source\repos\PowerbuildingApp\Powerbuilding\bin\Debug\net8.0\Microso
 C:\Users\Mo\source\repos\PowerbuildingApp\Powerbuilding\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
 C:\Users\Mo\source\repos\PowerbuildingApp\Powerbuilding\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
 C:\Users\Mo\source\repos\PowerbuildingApp\Powerbuilding\bin\Debug\net8.0\Microsoft.JSInterop.dll
+C:\Users\Mo\source\repos\PowerbuildingApp\Powerbuilding\obj\Debug\net8.0\Powerbuilding.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Mo\source\repos\PowerbuildingApp\Powerbuilding\bin\Debug\net8.0\Microsoft.DotNet.PlatformAbstractions.dll
+C:\Users\Mo\source\repos\PowerbuildingApp\Powerbuilding\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
+C:\Users\Mo\source\repos\PowerbuildingApp\Powerbuilding\bin\Debug\net8.0\Microsoft.Extensions.Diagnostics.Abstractions.dll
+C:\Users\Mo\source\repos\PowerbuildingApp\Powerbuilding\bin\Debug\net8.0\Microsoft.Extensions.Hosting.Abstractions.dll
+C:\Users\Mo\source\repos\PowerbuildingApp\Powerbuilding\bin\Debug\net8.0\Microsoft.Extensions.ObjectPool.dll
+C:\Users\Mo\source\repos\PowerbuildingApp\Powerbuilding\bin\Debug\net8.0\Newtonsoft.Json.dll

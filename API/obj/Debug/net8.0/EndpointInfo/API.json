@@ -344,6 +344,151 @@
         }
       }
     },
+    "/api/ExerciseTemplate": {
+      "get": {
+        "tags": [
+          "ExerciseTemplate"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "ExerciseTemplate"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExerciseTemplate"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExerciseTemplate"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExerciseTemplate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "ExerciseTemplate"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExerciseTemplate"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExerciseTemplate"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExerciseTemplate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/ExerciseTemplate/filtered/{muscle}/{type}": {
+      "get": {
+        "tags": [
+          "ExerciseTemplate"
+        ],
+        "parameters": [
+          {
+            "name": "muscle",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/TargetMuscle"
+            }
+          },
+          {
+            "name": "type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ExerciseType"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/ExerciseTemplate/muscle/{muscle}": {
+      "get": {
+        "tags": [
+          "ExerciseTemplate"
+        ],
+        "parameters": [
+          {
+            "name": "muscle",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/TargetMuscle"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/ExerciseTemplate/{id}": {
+      "delete": {
+        "tags": [
+          "ExerciseTemplate"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/invite": {
       "post": {
         "tags": [
@@ -1003,41 +1148,13 @@
             "type": "integer",
             "format": "int32"
           },
-          "workoutDay": {
-            "$ref": "#/components/schemas/WorkoutDay"
-          },
-          "name": {
-            "type": "string",
-            "nullable": true
-          },
-          "nameAr": {
-            "type": "string",
-            "nullable": true
-          },
-          "note": {
-            "type": "string",
-            "nullable": true
+          "exerciseTemplateId": {
+            "type": "integer",
+            "format": "int32"
           },
           "sets": {
             "type": "integer",
             "format": "int32"
-          },
-          "reps": {
-            "type": "string",
-            "nullable": true
-          },
-          "rest": {
-            "type": "string",
-            "nullable": true
-          },
-          "type": {
-            "$ref": "#/components/schemas/ExerciseType"
-          },
-          "muscle": {
-            "$ref": "#/components/schemas/MuscleGroup"
-          },
-          "variation": {
-            "$ref": "#/components/schemas/ExerciseVariation"
           },
           "minReps": {
             "type": "integer",
@@ -1046,6 +1163,20 @@
           "maxReps": {
             "type": "integer",
             "format": "int32"
+          },
+          "rest": {
+            "type": "string",
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "workoutDay": {
+            "$ref": "#/components/schemas/WorkoutDay"
+          },
+          "exerciseTemplate": {
+            "$ref": "#/components/schemas/ExerciseTemplate"
           }
         },
         "additionalProperties": false
@@ -1079,6 +1210,36 @@
           "date": {
             "type": "string",
             "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ExerciseTemplate": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "muscle": {
+            "$ref": "#/components/schemas/TargetMuscle"
+          },
+          "defaultType": {
+            "$ref": "#/components/schemas/ExerciseType"
+          },
+          "variation": {
+            "$ref": "#/components/schemas/ExerciseVariation"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false
@@ -1173,26 +1334,6 @@
           }
         },
         "additionalProperties": false
-      },
-      "MuscleGroup": {
-        "enum": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8,
-          9,
-          10,
-          11,
-          12,
-          13
-        ],
-        "type": "integer",
-        "format": "int32"
       },
       "NutritionPlan": {
         "type": "object",

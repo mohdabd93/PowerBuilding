@@ -8,7 +8,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class WeekPlanController : ControllerBase
     {
         private readonly WeekPlanService m_service;
@@ -25,7 +25,7 @@ namespace API.Controllers
             return Ok(result);
         }
         [HttpGet("full")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> GetFullWeekPlan()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

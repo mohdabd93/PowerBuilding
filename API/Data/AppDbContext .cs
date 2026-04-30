@@ -32,5 +32,6 @@ namespace API.Data
         public DbSet<WeekPlan> WeekPlans { get; set; }
         public DbSet<ExerciseLog> ExerciseLogs { get; set; }
         public DbSet<Invite> Invites { get; set; }
+        public DbSet<ExerciseTemplate> ExerciseTemplates { get; set; }
     }
 }

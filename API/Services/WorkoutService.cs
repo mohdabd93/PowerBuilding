@@ -39,16 +39,27 @@ namespace API.Services
         //--------------------------------------------------
         // Add
         //--------------------------------------------------
+        //public async Task<WorkoutDay> AddAsync(int weekPlanId, WorkoutDay day)
+        //{
+        //    day.WeekPlanId = weekPlanId;
+
+        //    m_context.WorkoutDays.Add(day);
+        //    await m_context.SaveChangesAsync();
+
+        //    return day;
+        //}
         public async Task<WorkoutDay> AddAsync(int weekPlanId, WorkoutDay day)
         {
+            var count = await m_context.WorkoutDays
+                .CountAsync(x => x.WeekPlanId == weekPlanId);
             day.WeekPlanId = weekPlanId;
+            day.DayNumber = count + 1;
 
             m_context.WorkoutDays.Add(day);
             await m_context.SaveChangesAsync();
 
             return day;
         }
-         
         //--------------------------------------------------
         // Update
         //--------------------------------------------------

@@ -104,26 +104,16 @@ namespace API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("ExerciseTemplateId")
+                        .HasColumnType("int");
+
                     b.Property<int>("MaxReps")
                         .HasColumnType("int");
 
                     b.Property<int>("MinReps")
                         .HasColumnType("int");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NameAr")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Note")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Reps")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Rest")
@@ -133,13 +123,12 @@ namespace API.Migrations
                     b.Property<int>("Sets")
                         .HasColumnType("int");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
                     b.Property<int>("WorkoutDayId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ExerciseTemplateId");
 
                     b.HasIndex("WorkoutDayId");
 
@@ -175,6 +164,38 @@ namespace API.Migrations
                     b.HasIndex("ExerciseId");
 
                     b.ToTable("ExerciseLogs");
+                });
+
+            modelBuilder.Entity("Domain.Entities.ExerciseTemplate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DefaultType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Muscle")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Variation")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ExerciseTemplates");
                 });
 
             modelBuilder.Entity("Domain.Entities.Invite", b =>
@@ -352,16 +373,17 @@ namespace API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("DayName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("DayName")
+                        .HasColumnType("int");
 
                     b.Property<int>("DayNumber")
                         .HasColumnType("int");
 
-                    b.Property<string>("Focus")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ExerciseType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Focus")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsRestDay")
                         .HasColumnType("bit");
@@ -509,11 +531,19 @@ namespace API.Migrations
 
             modelBuilder.Entity("Domain.Entities.Exercise", b =>
                 {
+                    b.HasOne("Domain.Entities.ExerciseTemplate", "ExerciseTemplate")
+                        .WithMany()
+                        .HasForeignKey("ExerciseTemplateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Domain.Entities.WorkoutDay", "WorkoutDay")
                         .WithMany("exercises")
                         .HasForeignKey("WorkoutDayId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ExerciseTemplate");
 
                     b.Navigation("WorkoutDay");
                 });

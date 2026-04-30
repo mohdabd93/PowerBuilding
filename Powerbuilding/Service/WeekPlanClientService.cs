@@ -24,7 +24,14 @@ namespace Powerbuilding.Service
 
             return await response.Content.ReadFromJsonAsync<WeekPlan>();
         }
+        public async Task<WeekPlan?> CreateAsync()
+        {
+            var response = await m_httpClient.PostAsJsonAsync("api/WeekPlan", new { });
 
-      
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadFromJsonAsync<WeekPlan>();
+        }
+
     }
 }

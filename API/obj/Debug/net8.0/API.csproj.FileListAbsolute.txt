@@ -1,5 +1,4 @@
 C:\Users\Mo\source\repos\PowerbuildingApp\API\bin\Debug\net8.0\appsettings.Development.json
-C:\Users\Mo\source\repos\PowerbuildingApp\API\bin\Debug\net8.0\appsettings.json
 C:\Users\Mo\source\repos\PowerbuildingApp\API\bin\Debug\net8.0\API.staticwebassets.endpoints.json
 C:\Users\Mo\source\repos\PowerbuildingApp\API\bin\Debug\net8.0\API.exe
 C:\Users\Mo\source\repos\PowerbuildingApp\API\bin\Debug\net8.0\API.deps.json
@@ -145,3 +144,10 @@ C:\Users\Mo\source\repos\PowerbuildingApp\API\bin\Debug\net8.0\MimeKit.dll
 C:\Users\Mo\source\repos\PowerbuildingApp\API\bin\Debug\net8.0\NETCore.MailKit.dll
 C:\Users\Mo\source\repos\PowerbuildingApp\API\bin\Debug\net8.0\BouncyCastle.Crypto.dll
 C:\Users\Mo\source\repos\PowerbuildingApp\API\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+C:\Users\Mo\source\repos\PowerbuildingApp\API\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.dll
+C:\Users\Mo\source\repos\PowerbuildingApp\API\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\Mo\source\repos\PowerbuildingApp\API\bin\Debug\net8.0\Microsoft.Extensions.Diagnostics.Abstractions.dll
+C:\Users\Mo\source\repos\PowerbuildingApp\API\bin\Debug\net8.0\Microsoft.Extensions.Hosting.Abstractions.dll
+C:\Users\Mo\source\repos\PowerbuildingApp\API\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\Mo\source\repos\PowerbuildingApp\API\bin\Debug\net8.0\Microsoft.Extensions.ObjectPool.dll
+C:\Users\Mo\source\repos\PowerbuildingApp\API\bin\Debug\net8.0\Microsoft.Extensions.Options.dll

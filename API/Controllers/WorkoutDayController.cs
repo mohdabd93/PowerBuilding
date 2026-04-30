@@ -7,7 +7,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class WorkoutDayController : ControllerBase
     {
         private readonly WorkoutService m_service;
@@ -18,6 +18,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{weekPlanId}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAll(int weekPlanId)
         {
             var result = await m_service.GetAllByWeekPlanIdAsync(weekPlanId);
@@ -38,6 +39,7 @@ namespace API.Controllers
         [HttpPost("{weekPlanId}")]
         public async Task<IActionResult> Create(int weekPlanId, [FromBody] WorkoutDay model)
         {
+            Console.WriteLine($">>> Create WorkoutDay, weekPlanId={weekPlanId}"); // 👈
             try
             {
                 var result = await m_service.AddAsync(weekPlanId, model);
