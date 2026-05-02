@@ -8,22 +8,18 @@ public class AuthenticatedPage : ComponentBase
     [Inject] public UserSessionService UserSession { get; set; } = default!;
     [Inject] public NavigationManager Nav { get; set; } = default!;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnInitializedAsync()
     {
-        if (firstRender)
+        await UserSession.LoadAsync();
+
+        if (!UserSession.IsLoggedIn)
         {
-            await UserSession.LoadAsync();
-
-            if (!UserSession.IsLoggedIn)
-            {
-                Nav.NavigateTo("/login", true);
-                return;
-            }
-
-            await OnPageLoadAsync();
-            StateHasChanged();
+            Nav.NavigateTo("/login", true);
+            return;
         }
+
+        await OnPageLoadAsync();
     }
-     
+
     protected virtual Task OnPageLoadAsync() => Task.CompletedTask;
 }

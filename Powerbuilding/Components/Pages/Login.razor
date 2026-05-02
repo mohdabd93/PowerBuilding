@@ -5,9 +5,7 @@
 @rendermode InteractiveServer
 
 <div class="auth-bg">
-
     <div class="auth-card">
-
         <div class="auth-header">
             <div class="logo">⚡ Powerbuilding</div>
             <h1>Welcome Back</h1>
@@ -15,83 +13,106 @@
         </div>
 
         <div class="auth-body">
-
-            <input class="auth-input" placeholder="Email" @bind="model.Email" />
-            <input class="auth-input" type="password" placeholder="Password" @bind="model.Password" />
+            @* أضفت تفعيل لزر الـ Enter لتسهيل الدخول *@
+            <input class="auth-input" placeholder="Email" @bind="model.Email" @onkeyup="HandleKeyUp" />
+            <input class="auth-input" type="password" placeholder="Password" @bind="model.Password" @onkeyup="HandleKeyUp" />
 
             @if (!string.IsNullOrEmpty(errorMsg))
             {
                 <div class="auth-error">@errorMsg</div>
             }
 
-            <button class="auth-btn" @onclick="SubmitLogin">
-                Sign In
-            </button>
+            @if (isProcessing)
+            {
+                <button class="auth-btn" disabled>
+                    <div class="loader-white"></div> @* إضافة لودر بسيط لو عندك بالـ CSS *@
+                </button>
+            }
+            else
+            {
+                <button class="auth-btn" @onclick="SubmitLogin">
+                    Sign In
+                </button>
+            }
 
             <button class="auth-link" @onclick="GoForgot">
                 Forgot Password?
             </button>
-
         </div>
-
     </div>
-
 </div>
 
 @code {
     private LoginRequest model = new();
     private string errorMsg = "";
+    private bool isProcessing = false;
+
+    private async Task HandleKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter") await SubmitLogin();
+    }
 
     private async Task SubmitLogin()
     {
+        if (isProcessing) return;
+
+        isProcessing = true;
         errorMsg = "";
-
-        var res = await AuthService.LoginAsync(model);
-
-        if (res == null)
-        {
-            errorMsg = "No response from server";
-            return;
-        }
-
-        if (!res.Success)
-        {
-            errorMsg = res.Error ?? "Login failed";
-            return;
-        }
-
-        if (res.Data is not System.Text.Json.JsonElement json)
-        {
-            errorMsg = "Invalid response format";
-            return;
-        }
 
         try
         {
-            var id = json.GetProperty("id").GetString();
-            var email = json.GetProperty("email").GetString();
-            var userName = json.GetProperty("userName").GetString();
-            var firstName = json.GetProperty("firstName").GetString();
-            var lastName = json.GetProperty("lastName").GetString();
+            var res = await AuthService.LoginAsync(model);
 
-            if (string.IsNullOrEmpty(id))
+            if (res == null)
             {
-                errorMsg = "Invalid user id";
+                errorMsg = "No response from server";
                 return;
             }
 
+            if (!res.Success)
+            {
+                errorMsg = res.Error ?? "Login failed";
+                return;
+            }
+
+            if (res.Data is not System.Text.Json.JsonElement json)
+            {
+                errorMsg = "Invalid response format";
+                return;
+            }
+
+            // استخراج البيانات بحرص
+            var id = json.TryGetProperty("id", out var idProp) ? idProp.GetString() : "";
+            var email = json.TryGetProperty("email", out var emailProp) ? emailProp.GetString() : "";
+            var userName = json.TryGetProperty("userName", out var userProp) ? userProp.GetString() : "";
+            var firstName = json.TryGetProperty("firstName", out var fnProp) ? fnProp.GetString() : "";
+            var lastName = json.TryGetProperty("lastName", out var lnProp) ? lnProp.GetString() : "";
+
+            if (string.IsNullOrEmpty(id))
+            {
+                errorMsg = "Invalid user data received";
+                return;
+            }
+
+     
             await UserSessionService.SetUser(id, email, userName, firstName, lastName);
 
+      
+            await Task.Delay(150);
+
+    
             Nav.NavigateTo("/", forceLoad: true);
         }
-        catch
+        catch (Exception ex)
         {
-            errorMsg = "Failed to parse user data";
+            errorMsg = "An error occurred during login";
+            Console.WriteLine(ex.Message);
+        }
+        finally
+        {
+            isProcessing = false;
         }
     }
 
-    private void GoForgot()
-    {
-        Nav.NavigateTo("/forgot-password");
-    }
+    private void GoForgot() => Nav.NavigateTo("/forgot-password");
 }

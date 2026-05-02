@@ -336,10 +336,82 @@ input, select {
         color: white;
     }
 
+/* تنظيم الـ Topbar ليحتوي العناصر على الأطراف */
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    position: relative;
+}
+ 
 .nav-right {
     display: flex;
     align-items: center;
+    gap: 1rem;
+    position: relative;  
+}
+
+ 
+.dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 260px;
+    background: rgba(15, 18, 28, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--stroke);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow);
+    padding: 1rem;
+    z-index: 1000;
+    animation: pop 0.25s ease;
+}
+ 
+.dropdown-header {
+    display: flex;
+    align-items: center;
     gap: 0.8rem;
+    padding-bottom: 1rem;
+}
+
+.big-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.d-email {
+    font-size: 0.75rem;
+    color: var(--muted);
+    word-break: break-all;
+}
+
+.d-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.divider {
+    height: 1px;
+    background: var(--stroke);
+    margin: 0.8rem 0;
+}
+ 
+.card-title {
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+}
+
+.card-desc {
+    font-size: 0.85rem;
+    color: var(--muted);
 }
 
 /* theme toggle button */
@@ -478,3 +550,112 @@ input, select {
     .exercise-btn:hover {
         transform: scale(1.05);
     }
+#blazor-error-ui {
+    display: none;
+    background: #ff445518;
+    border-top: 1px solid #ff445530;
+    color: var(--red);
+    padding: 0.6rem 1rem;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    font-size: 0.82rem;
+}
+
+    #blazor-error-ui .reload {
+        color: var(--gold);
+        margin: 0 0.5rem;
+    }
+
+    #blazor-error-ui .dismiss {
+        cursor: pointer;
+        float: right;
+    }
+/* AUTH PAGES (Login / Register) */
+.auth-bg {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 440px;
+    padding: 2.5rem;
+    background: var(--surface);
+    border: 1px solid var(--stroke);
+    backdrop-filter: blur(25px);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    animation: pop 0.4s cubic-bezier(.2,.8,.2,1);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+    .auth-header .logo {
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .auth-header h1 {
+        font-size: 1.8rem;
+        margin: 0.5rem 0;
+    }
+
+.auth-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.auth-input {
+    /* تستخدم نفس ستايل الـ input العالمي اللي عرفناه فوق */
+}
+
+.auth-error {
+    background: rgba(255, 68, 85, 0.1);
+    border: 1px solid rgba(255, 68, 85, 0.2);
+    color: #ff4455;
+    padding: 0.8rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+.auth-link {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-decoration: none;
+    margin-top: 0.5rem;
+    transition: 0.2s;
+}
+
+    .auth-link:hover {
+        color: var(--accent-2);
+    }
+
+
+.loader-white {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    display: inline-block;
+}
